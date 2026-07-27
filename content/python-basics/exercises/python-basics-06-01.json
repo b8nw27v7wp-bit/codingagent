@@ -1,0 +1,17 @@
+{
+  "id": "python-basics-06-01",
+  "courseId": "python-basics",
+  "lessonId": "06",
+  "title": "打印 1 到 10",
+  "description": "使用 for 循环输出数字 1 到 10，每行一个",
+  "testCases": [
+    {
+      "input": "",
+      "expected": "1\n2\n3\n4\n5\n6\n7\n8\n9\n10"
+    }
+  ],
+  "hints": [
+    "用 for i in range(1, 11):",
+    "range(1, 11) 包含 1 不包含 11"
+  ]
+}

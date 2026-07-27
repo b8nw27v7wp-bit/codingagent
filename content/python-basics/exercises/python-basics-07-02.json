@@ -1,0 +1,17 @@
+{
+  "id": "python-basics-07-02",
+  "courseId": "python-basics",
+  "lessonId": "07",
+  "title": "列表最大值",
+  "description": "给定列表 nums = [23, 45, 12, 67, 34]，输出 '最大值：67'",
+  "testCases": [
+    {
+      "input": "",
+      "expected": "最大值：67"
+    }
+  ],
+  "hints": [
+    "用 max(nums) 函数",
+    "print(f'最大值：{max(nums)}')"
+  ]
+}

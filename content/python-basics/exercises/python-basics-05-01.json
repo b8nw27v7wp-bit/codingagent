@@ -1,0 +1,17 @@
+{
+  "id": "python-basics-05-01",
+  "courseId": "python-basics",
+  "lessonId": "05",
+  "title": "判断年龄",
+  "description": "设定 age = 15，如果 age >= 18 输出 '成年人'，否则输出 '未成年'",
+  "testCases": [
+    {
+      "input": "",
+      "expected": "未成年"
+    }
+  ],
+  "hints": [
+    "用 if...else 结构",
+    "注意缩进"
+  ]
+}

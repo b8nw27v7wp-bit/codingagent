@@ -1,0 +1,17 @@
+{
+  "id": "python-basics-05-02",
+  "courseId": "python-basics",
+  "lessonId": "05",
+  "title": "成绩等级",
+  "description": "设定 score = 85，用 elif 判断：>=90 输出 'A'，>=80 输出 'B'，>=70 输出 'C'，其余 'D'",
+  "testCases": [
+    {
+      "input": "",
+      "expected": "B"
+    }
+  ],
+  "hints": [
+    "从高分到低分依次判断",
+    "if score >= 90: ... elif score >= 80: ..."
+  ]
+}

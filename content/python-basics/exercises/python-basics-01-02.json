@@ -1,0 +1,17 @@
+{
+  "id": "python-basics-01-02",
+  "courseId": "python-basics",
+  "lessonId": "01",
+  "title": "输出多行文字",
+  "description": "分别输出两行文字：第一行是'Python 很有趣'，第二行是'Let's code!'",
+  "testCases": [
+    {
+      "input": "",
+      "expected": "Python 很有趣\nLet's code!"
+    }
+  ],
+  "hints": [
+    "用两次 print()",
+    "每次 print 会换行"
+  ]
+}

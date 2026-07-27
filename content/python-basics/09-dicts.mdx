@@ -1,0 +1,120 @@
+---
+title: 字典
+order: 9
+---
+
+列表用**数字编号**访问元素。但如果想用**名字**来查找呢？比如查"小明的成绩"而不是"第 3 个成绩"。
+
+Python 的答案是：**字典（Dictionary）**。
+
+---
+
+## 字典是什么？
+
+字典就像真正的字典——通过**键（Key）**来查找**值（Value）**。
+
+```python
+student = {
+    "name": "小明",
+    "age": 18,
+    "score": 95
+}
+#  键       值
+```
+
+| 场景 | 列表 | 字典 |
+|---|---|---|
+| 全班成绩 | `[95, 87, 78]` ✅ | `{"小明": 95, "小红": 87}` ✅ |
+| 查某个人的 | 需要知道索引 | 直接用名字查！ |
+
+---
+
+## 基本操作
+
+```python
+# 访问
+print(student["name"])     # 小明
+print(student.get("name")) # 小明（更安全，不存在返 None）
+
+# 添加/修改
+student["grade"] = "A"     # 添加新键值对
+student["score"] = 98       # 修改已有键
+
+# 删除
+del student["age"]          # 删除 age 这一项
+removed = student.pop("grade")  # 删除并返回
+```
+
+---
+
+## 遍历字典
+
+```python
+student = {"name": "小明", "age": 18, "score": 95}
+
+# 遍历键
+for key in student:
+    print(key)  # name, age, score
+
+# 遍历键和值
+for key, value in student.items():
+    print(f"{key} → {value}")
+
+# 只遍历值
+for value in student.values():
+    print(value)
+```
+
+---
+
+## 嵌套结构
+
+字典里面可以放任何东西——包括列表和字典！
+
+```python
+# 学生管理系统
+students = [
+    {"name": "小明", "scores": [95, 87, 78], "grade": "A"},
+    {"name": "小红", "scores": [92, 91, 89], "grade": "A"},
+    {"name": "小刚", "scores": [60, 65, 58], "grade": "C"},
+]
+
+# 计算每个人的平均分
+for s in students:
+    avg = sum(s["scores"]) / len(s["scores"])
+    print(f"{s['name']}: {avg:.1f}")
+```
+
+---
+
+## 常用方法
+
+| 方法 | 作用 |
+|---|---|
+| `keys()` | 获取所有键 |
+| `values()` | 获取所有值 |
+| `items()` | 获取所有键值对 |
+| `get(key, default)` | 安全取值 |
+| `update(dict2)` | 合并两个字典 |
+
+---
+
+## 列表 vs 字典
+
+| 特性 | 列表 | 字典 |
+|---|---|---|
+| 访问方式 | 数字索引 | 键（Key） |
+| 顺序 | 有序 | Python 3.7+ 有序 |
+| 查找速度 | 慢（O(n)） | 快（O(1)） |
+| 适用场景 | 同类数据批量处理 | 属性/配置/映射 |
+
+---
+
+## 关键要点
+
+| 要点 | 说明 |
+|---|---|
+| `{}` | 花括号创建字典 |
+| `key: value` | 冒号分隔键和值 |
+| `.get()` | 安全取值，避免 KeyError |
+| 嵌套 | 字典 + 列表可以表示复杂数据 |

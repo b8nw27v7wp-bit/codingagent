@@ -1,0 +1,17 @@
+{
+  "id": "python-basics-04-02",
+  "courseId": "python-basics",
+  "lessonId": "04",
+  "title": "计算器",
+  "description": "设定 a = 10, b = 3，输出 a / b 的结果（保留2位小数），格式 '10 / 3 = 3.33'",
+  "testCases": [
+    {
+      "input": "",
+      "expected": "10 / 3 = 3.33"
+    }
+  ],
+  "hints": [
+    "用 round(a/b, 2) 保留小数",
+    "f'{a} / {b} = {round(a/b, 2)}'"
+  ]
+}

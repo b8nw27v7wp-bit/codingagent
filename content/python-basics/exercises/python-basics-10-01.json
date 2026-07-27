@@ -1,0 +1,17 @@
+{
+  "id": "python-basics-10-01",
+  "courseId": "python-basics",
+  "lessonId": "10",
+  "title": "计算平均分",
+  "description": "给定列表 scores = [85, 92, 78, 90, 88]，输出 '平均分：86.6'",
+  "testCases": [
+    {
+      "input": "",
+      "expected": "平均分：86.6"
+    }
+  ],
+  "hints": [
+    "sum(scores) / len(scores)",
+    "f'平均分：{avg:.1f}' 保留一位小数"
+  ]
+}

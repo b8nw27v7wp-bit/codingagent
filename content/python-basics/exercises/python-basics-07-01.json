@@ -1,0 +1,17 @@
+{
+  "id": "python-basics-07-01",
+  "courseId": "python-basics",
+  "lessonId": "07",
+  "title": "列表求和",
+  "description": "给定列表 nums = [10, 20, 30, 40, 50]，输出 '和是：150'",
+  "testCases": [
+    {
+      "input": "",
+      "expected": "和是：150"
+    }
+  ],
+  "hints": [
+    "用 sum(nums) 函数",
+    "print(f'和是：{sum(nums)}')"
+  ]
+}

@@ -1,0 +1,178 @@
+---
+title: 综合项目：学生成绩管理系统
+order: 10
+---
+
+恭喜你学完了 Python 基础！现在是时候把所有知识**串起来**，做一个完整的项目了。
+
+---
+
+## 项目目标
+
+做一个**命令行版学生成绩管理系统**，支持：
+
+- ✅ 添加学生
+- ✅ 录入成绩
+- ✅ 查询单个学生的信息和平均分
+- ✅ 显示全班成绩排名
+- ✅ 统计及格率
+
+---
+
+## 第一步：设计数据结构
+
+```python
+# 用一个列表存储所有学生，每个学生是一个字典
+students = [
+    {"name": "小明", "scores": [95, 87, 78]},
+    {"name": "小红", "scores": [92, 91, 89]},
+]
+```
+
+---
+
+## 第二步：实现核心函数
+
+### 计算平均分
+
+```python
+def calc_average(scores):
+    if len(scores) == 0:
+        return 0
+    return sum(scores) / len(scores)
+```
+
+### 判断及格
+
+```python
+def is_pass(score):
+    return score >= 60
+```
+
+### 添加学生
+
+```python
+def add_student(students, name):
+    for s in students:
+        if s["name"] == name:
+            print(f"学生 {name} 已存在！")
+            return
+    students.append({"name": name, "scores": []})
+    print(f"✅ 已添加学生：{name}")
+```
+
+### 录入成绩
+
+```python
+def add_score(students, name, score):
+    for s in students:
+        if s["name"] == name:
+            s["scores"].append(score)
+            print(f"✅ {name} 成绩 {score} 已录入")
+            return
+    print(f"❌ 未找到学生：{name}")
+```
+
+### 查询学生
+
+```python
+def query_student(students, name):
+    for s in students:
+        if s["name"] == name:
+            avg = calc_average(s["scores"])
+            status = "及格" if avg >= 60 else "不及格"
+            print(f"姓名：{s['name']}")
+            print(f"成绩：{s['scores']}")
+            print(f"平均分：{avg:.1f} ({status})")
+            return
+    print(f"❌ 未找到学生：{name}")
+```
+
+### 排名显示
+
+```python
+def show_ranking(students):
+    # 计算每个学生的平均分并排序
+    ranked = []
+    for s in students:
+        avg = calc_average(s["scores"])
+        ranked.append({"name": s["name"], "average": avg})
+
+    # 降序排序
+    ranked.sort(key=lambda x: x["average"], reverse=True)
+
+    print("\n📊 成绩排名：")
+    for i, r in enumerate(ranked, 1):
+        print(f"  {i}. {r['name']}: {r['average']:.1f}")
+```
+
+---
+
+## 第三步：主循环
+
+```python
+def main():
+    students = []
+
+    while True:
+        print("\n===== 学生成绩管理系统 =====")
+        print("1. 添加学生")
+        print("2. 录入成绩")
+        print("3. 查询学生")
+        print("4. 查看排名")
+        print("5. 统计信息")
+        print("0. 退出")
+
+        choice = input("请选择操作：")
+
+        if choice == "1":
+            name = input("学生姓名：")
+            add_student(students, name)
+        elif choice == "2":
+            name = input("学生姓名：")
+            score = float(input("成绩："))
+            add_score(students, name, score)
+        elif choice == "3":
+            name = input("学生姓名：")
+            query_student(students, name)
+        elif choice == "4":
+            show_ranking(students)
+        elif choice == "5":
+            show_stats(students)
+        elif choice == "0":
+            print("再见！")
+            break
+        else:
+            print("无效选项，请重新选择")
+
+# 启动！
+main()
+```
+
+---
+
+## 扩展挑战
+
+完成基础功能后，试试这些挑战：
+
+1. **数据持久化** — 把学生数据保存到文件，下次打开还能看到
+2. **输入校验** — 成绩必须在 0-100 之间
+3. **修改成绩** — 支持修改已录入的成绩
+4. **导出报告** — 将排名保存为文本文件
+
+---
+
+## 课程总结
+
+| 概念 | 出现的课时 |
+|---|---|
+| 变量与赋值 | 第 2 课 |
+| 数据类型 | 第 3 课 |
+| 输入输出 | 第 4 课 |
+| 条件判断 | 第 5 课 |
+| 循环 | 第 6 课 |
+| 列表 | 第 7 课 |
+| 函数 | 第 8 课 |
+| 字典 | 第 9 课 |
+
+> 🎉 恭喜！你已经掌握了 Python 编程的核心概念，可以开始动手做项目了！

@@ -1,0 +1,17 @@
+{
+  "id": "python-basics-04-01",
+  "courseId": "python-basics",
+  "lessonId": "04",
+  "title": "格式化输出",
+  "description": "设定 age = 20，输出 '我今年 20 岁'",
+  "testCases": [
+    {
+      "input": "",
+      "expected": "我今年 20 岁"
+    }
+  ],
+  "hints": [
+    "用 f-string: f'我今年 {age} 岁'",
+    "先给 age 赋值"
+  ]
+}

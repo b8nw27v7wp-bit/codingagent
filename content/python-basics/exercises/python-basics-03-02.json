@@ -1,0 +1,17 @@
+{
+  "id": "python-basics-03-02",
+  "courseId": "python-basics",
+  "lessonId": "03",
+  "title": "字符串拼接",
+  "description": "将 'Hello' 和 'World' 拼接成 'Hello World'（中间有空格），输出结果",
+  "testCases": [
+    {
+      "input": "",
+      "expected": "Hello World"
+    }
+  ],
+  "hints": [
+    "用 + 拼接字符串",
+    "别忘了中间加空格 ' '"
+  ]
+}

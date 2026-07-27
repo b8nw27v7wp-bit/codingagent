@@ -1,0 +1,17 @@
+{
+  "id": "python-basics-01-01",
+  "courseId": "python-basics",
+  "lessonId": "01",
+  "title": "你的第一个 Python 程序",
+  "description": "使用 print() 函数输出一句问候语 'Hello, World!'",
+  "testCases": [
+    {
+      "input": "",
+      "expected": "Hello, World!"
+    }
+  ],
+  "hints": [
+    "print() 函数可以把括号里的内容显示在屏幕上",
+    "记得加引号包住文字"
+  ]
+}

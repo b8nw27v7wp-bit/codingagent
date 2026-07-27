@@ -1,0 +1,17 @@
+{
+  "id": "python-basics-03-01",
+  "courseId": "python-basics",
+  "lessonId": "03",
+  "title": "判断数据类型",
+  "description": "用 type() 分别输出 42 和 'hello' 的类型，一行一个",
+  "testCases": [
+    {
+      "input": "",
+      "expected": "<class 'int'>\n<class 'str'>"
+    }
+  ],
+  "hints": [
+    "type(42) 返回 <class 'int'>",
+    "print(type(42)) 输出"
+  ]
+}

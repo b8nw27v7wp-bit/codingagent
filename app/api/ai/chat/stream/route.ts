@@ -1,0 +1,93 @@
+import { NextRequest } from "next/server";
+import { getDeepSeekApiKey } from "@/lib/api-key";
+import { buildTeachingPrompt } from "@/lib/prompts/tutor";
+
+export async function POST(request: NextRequest) {
+  const { message } = await request.json();
+
+  if (!message || typeof message !== "string") {
+    return new Response(JSON.stringify({ error: "message 字段必填" }), {
+      status: 400,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+
+  const apiKey = getDeepSeekApiKey();
+  if (!apiKey) {
+    return new Response(JSON.stringify({ error: "API Key 未配置" }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+
+  const systemPrompt = buildTeachingPrompt("beginner");
+
+  const res = await fetch("https://api.deepseek.com/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${apiKey}`,
+    },
+    body: JSON.stringify({
+      model: "deepseek-chat",
+      messages: [
+        { role: "system", content: systemPrompt },
+        { role: "user", content: message },
+      ],
+      stream: true,
+      max_tokens: 2048,
+    }),
+  });
+
+  if (!res.ok || !res.body) {
+    const err = await res.text().catch(() => "unknown");
+    return new Response(JSON.stringify({ error: `API ${res.status}: ${err}` }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+
+  const reader = res.body.getReader();
+  const decoder = new TextDecoder();
+
+  const stream = new ReadableStream({
+    async start(controller) {
+      let buffer = "";
+      try {
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+
+          buffer += decoder.decode(value, { stream: true });
+          const lines = buffer.split("\n");
+          buffer = lines.pop() || "";
+
+          for (const line of lines) {
+            if (line.startsWith("data: ")) {
+              const data = line.slice(6);
+              if (data === "[DONE]") continue;
+              try {
+                const json = JSON.parse(data);
+                const content = json.choices?.[0]?.delta?.content;
+                if (content) {
+                  controller.enqueue(new TextEncoder().encode(content));
+                }
+              } catch {}
+            }
+          }
+        }
+      } catch (err) {
+        console.error("Stream error:", err);
+      } finally {
+        controller.close();
+      }
+    },
+  });
+
+  return new Response(stream, {
+    headers: {
+      "Content-Type": "text/plain; charset=utf-8",
+      "Transfer-Encoding": "chunked",
+    },
+  });
+}

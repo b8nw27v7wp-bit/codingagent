@@ -1,0 +1,17 @@
+{
+  "id": "python-basics-09-01",
+  "courseId": "python-basics",
+  "lessonId": "09",
+  "title": "创建字典",
+  "description": "创建字典 person = {'name': '小明', 'age': 18}，输出 '小明今年 18 岁'",
+  "testCases": [
+    {
+      "input": "",
+      "expected": "小明今年 18 岁"
+    }
+  ],
+  "hints": [
+    "person['name'] 获取名字",
+    "f\"{person['name']}今年 {person['age']} 岁\""
+  ]
+}

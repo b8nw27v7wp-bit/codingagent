@@ -1,0 +1,17 @@
+{
+  "id": "python-basics-06-02",
+  "courseId": "python-basics",
+  "lessonId": "06",
+  "title": "累加求和",
+  "description": "计算 1 到 100 的和，输出 '总和是：5050'",
+  "testCases": [
+    {
+      "input": "",
+      "expected": "总和是：5050"
+    }
+  ],
+  "hints": [
+    "用 total = 0 初始化和",
+    "for i in range(1, 101): total += i"
+  ]
+}

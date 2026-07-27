@@ -1,0 +1,17 @@
+{
+  "id": "python-basics-02-02",
+  "courseId": "python-basics",
+  "lessonId": "02",
+  "title": "简单计算",
+  "description": "计算 25 + 17 的结果，输出 '答案是：42'",
+  "testCases": [
+    {
+      "input": "",
+      "expected": "答案是：42"
+    }
+  ],
+  "hints": [
+    "直接做加法运算",
+    "用 f-string 格式化输出"
+  ]
+}

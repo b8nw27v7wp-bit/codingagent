@@ -1,0 +1,17 @@
+{
+  "id": "python-basics-08-01",
+  "courseId": "python-basics",
+  "lessonId": "08",
+  "title": "定义加法函数",
+  "description": "定义一个函数 add(a, b) 返回两数之和，然后调用 add(3, 5) 输出结果",
+  "testCases": [
+    {
+      "input": "",
+      "expected": "8"
+    }
+  ],
+  "hints": [
+    "def add(a, b): return a + b",
+    "print(add(3, 5))"
+  ]
+}

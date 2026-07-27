@@ -1,0 +1,17 @@
+{
+  "id": "python-basics-08-02",
+  "courseId": "python-basics",
+  "lessonId": "08",
+  "title": "判断偶数",
+  "description": "定义函数 is_even(n) 判断是否为偶数，测试 42 和 37，输出 '42 是偶数' 和 '37 是奇数'",
+  "testCases": [
+    {
+      "input": "",
+      "expected": "42 是偶数\n37 是奇数"
+    }
+  ],
+  "hints": [
+    "def is_even(n): return n % 2 == 0",
+    "用 if...else 判断输出"
+  ]
+}

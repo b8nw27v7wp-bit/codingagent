@@ -1,0 +1,136 @@
+---
+title: 函数
+order: 8
+---
+
+你已经在用函数了！`print()`、`len()`、`input()`——这些都是 Python 内置的函数。现在我们来学习**自己创建函数**。
+
+---
+
+## 为什么需要函数？
+
+想象你在写一个程序，需要多次计算圆的面积。每次都写 `3.14 * r * r` 太麻烦了——而且容易出错。
+
+函数的本质：**给一段代码起个名字，需要时喊它就行。**
+
+---
+
+## 定义和调用
+
+```python
+# 定义函数
+def greet():
+    print("你好！")
+    print("欢迎学习 Python！")
+
+# 调用函数
+greet()  # 输出两行问候语
+greet()  # 再输出一遍
+```
+
+### 带参数的函数
+
+```python
+def greet(name):        # name 是参数——占位符
+    print(f"你好，{name}！")
+
+greet("小明")   # 你好，小明！
+greet("小红")   # 你好，小红！
+```
+
+---
+
+## 返回值
+
+函数可以**计算出一个结果并交回来**。
+
+```python
+def add(a, b):
+    result = a + b
+    return result   # 把结果交出去
+
+sum_value = add(3, 5)
+print(sum_value)  # 8
+print(add(10, 20))  # 30
+```
+
+> 没有 `return` 的函数默认返回 `None`。
+
+---
+
+## 参数默认值
+
+```python
+def greet(name="同学"):  # 默认值
+    print(f"你好，{name}！")
+
+greet("小明")   # 你好，小明！
+greet()         # 你好，同学！(用了默认值)
+```
+
+---
+
+## 变量作用域
+
+| 变量类型 | 可见范围 |
+|---|---|
+| 函数内定义 | 只在这个函数内可见 |
+| 函数外定义 | 全局可见 |
+
+```python
+x = 10  # 全局变量
+
+def my_func():
+    y = 20  # 局部变量——只在函数里能用
+    print(x)  # ✅ 可以访问全局变量
+    print(y)  # ✅ 可以访问局部变量
+
+print(x)  # ✅
+# print(y)  # ❌ 报错！函数外访问不到 y
+```
+
+---
+
+## 函数的好处
+
+1. **减少重复** — 写一次，用多次
+2. **更清晰** — 起个好名字，一眼知道干什么
+3. **好调试** — 出问题只要改一处
+4. **可测试** — 每个函数可以单独测试
+
+---
+
+## 实战示例
+
+```python
+# 计算平均分
+def average(scores):
+    total = sum(scores)
+    count = len(scores)
+    return total / count
+
+# 判断是否及格
+def is_pass(score):
+    return score >= 60
+
+# 使用
+scores = [85, 92, 78, 60, 55]
+avg = average(scores)
+print(f"平均分：{avg}")
+
+for s in scores:
+    status = "及格" if is_pass(s) else "不及格"
+    print(f"{s} 分：{status}")
+```
+
+---
+
+## 关键要点
+
+| 要点 | 说明 |
+|---|---|
+| `def` | 定义函数的关键字 |
+| 参数 | 函数接收的输入 |
+| `return` | 返回计算结果 |
+| 作用域 | 局部变量只在函数内有效 |
+| 默认值 | 参数可以设置默认值 |

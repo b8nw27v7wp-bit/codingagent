@@ -1,0 +1,17 @@
+{
+  "id": "python-basics-09-02",
+  "courseId": "python-basics",
+  "lessonId": "09",
+  "title": "字典遍历",
+  "description": "遍历字典 info = {'a': 1, 'b': 2, 'c': 3}，输出 'a:1 b:2 c:3'",
+  "testCases": [
+    {
+      "input": "",
+      "expected": "a:1 b:2 c:3"
+    }
+  ],
+  "hints": [
+    "for k, v in info.items():",
+    "print(f'{k}:{v}', end=' ')"
+  ]
+}

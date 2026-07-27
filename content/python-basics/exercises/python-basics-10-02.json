@@ -1,0 +1,17 @@
+{
+  "id": "python-basics-10-02",
+  "courseId": "python-basics",
+  "lessonId": "10",
+  "title": "统计及格人数",
+  "description": "给定 scores = [85, 55, 92, 60, 45, 78]，统计 >=60 的人数，输出 '及格人数：4'",
+  "testCases": [
+    {
+      "input": "",
+      "expected": "及格人数：4"
+    }
+  ],
+  "hints": [
+    "用 for 遍历 + if >= 60 计数",
+    "count = sum(1 for s in scores if s >= 60)"
+  ]
+}
