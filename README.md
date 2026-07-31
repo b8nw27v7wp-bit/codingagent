@@ -7,7 +7,6 @@
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-4-38bdf8?logo=tailwindcss)](https://tailwindcss.com/)
 [![DeepSeek](https://img.shields.io/badge/LLM-DeepSeek--Chat-purple)](https://deepseek.com/)
 [![Build](https://img.shields.io/badge/build-passing-brightgreen)]()
-[![License](https://img.shields.io/badge/license-MIT-blue)]()
 
 ---
 
@@ -128,7 +127,7 @@ ai-coding-tutor/
 │       ├── learning-dashboard.tsx # 学习数据看板
 │       └── lesson-*.tsx          # 进度追踪组件
 ├── lib/
-│   ├── api-key.ts                # 统一 API Key 管理
+│   ├── api-key.ts                # BYOK Key 管理（请求头优先，服务端兜底）
 │   ├── courses.ts                # 课程加载 + MDX→HTML
 │   ├── exercises.ts              # 练习题加载器
 │   ├── progress.ts               # 学习进度管理
@@ -163,7 +162,13 @@ ai-coding-tutor/
 ### 请求示例
 
 ```bash
-# AI 对话
+# AI 对话（客户端自带 Key，通过 x-api-key 请求头传入）
+curl -X POST http://localhost:3000/api/ai/chat/stream \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: sk-你的DeepSeekKey" \
+  -d '{"message": "什么是变量？"}'
+
+# AI 对话（不传 x-api-key 时回退服务端 .env.local 配置）
 curl -X POST http://localhost:3000/api/ai/chat/stream \
   -H "Content-Type: application/json" \
   -d '{"message": "什么是变量？"}'
@@ -217,8 +222,8 @@ curl -X POST http://localhost:3000/api/code/evaluate \
 
 1. 推送项目到 GitHub
 2. 在 [Vercel](https://vercel.com) 导入仓库
-3. 配置环境变量 `DEEPSEEK_API_KEY`
-4. 部署即可
+3. 部署即可（客户端自带 Key，**无需**配置服务端 `DEEPSEEK_API_KEY`）
+4. 如需服务端兜底，配置环境变量 `DEEPSEEK_API_KEY`
 
 > ⚠️ 注意：Vercel 环境可能没有 Python 运行时，代码执行功能需额外的 Python 环境支持。
 
@@ -226,7 +231,8 @@ curl -X POST http://localhost:3000/api/code/evaluate \
 
 ```bash
 docker build -t ai-coding-tutor .
-docker run -p 3000:3000 -e DEEPSEEK_API_KEY=sk-xxx ai-coding-tutor
+docker run -p 3000:3000 ai-coding-tutor
+# 客户端自带 Key；如需服务端兜底：-e DEEPSEEK_API_KEY=sk-xxx
 ```
 
 ---
@@ -247,14 +253,10 @@ docker run -p 3000:3000 -e DEEPSEEK_API_KEY=sk-xxx ai-coding-tutor
 
 ## 🔒 安全措施
 
-- ✅ API Key 不提交到仓库（`.env.local`）
+- ✅ API Key 不提交到仓库（`.env.local` 已被 gitignore）
+- ✅ BYOK 模式：客户 Key 仅存浏览器 localStorage，经 `x-api-key` 请求头传输，不落服务器
+- ✅ 客户 Key 优先于服务端配置；错误响应由 DeepSeek 自动打码，不泄露完整 Key
 - ✅ 代码沙箱拦截 `import os`/`subprocess`/`eval`/`exec`
 - ✅ 10 秒超时防止死循环
 - ✅ 输入长度限制（50KB）
 - ✅ `cross-spawn` 替代 `child_process.exec`
-
----
-
-## 📄 License
-
-MIT — 本科毕业设计项目，自由使用。
