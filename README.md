@@ -58,7 +58,7 @@
 
 - Node.js ≥ 18
 - Python ≥ 3.8（代码沙箱执行）
-- DeepSeek API Key（[获取地址](https://platform.deepseek.com/)）
+- DeepSeek API Key（可选，[获取地址](https://platform.deepseek.com/)）
 
 ### 安装运行
 
@@ -70,8 +70,8 @@ cd ai-coding-tutor
 # 2. 安装依赖
 npm install
 
-# 3. 配置 API Key
-echo "DEEPSEEK_API_KEY=sk-your-key-here" > .env.local
+# 3.（可选）配置服务端兜底 API Key
+echo "DEEPSEEK_API_KEY=«redacted:sk-…»" > .env.local
 
 # 4. 启动开发服务器
 npm run dev
@@ -79,6 +79,15 @@ npm run dev
 # 5. 打开浏览器访问
 # http://localhost:3000
 ```
+
+### API Key 模式（BYOK）
+
+项目支持两种 API Key 来源，**优先使用客户自带的 Key**：
+
+1. **客户端填写（推荐）**：打开智能问答面板，点击右上角 🔑 按钮，填入你自己的 DeepSeek API Key。Key 仅保存在浏览器 localStorage，请求时通过 `x-api-key` 请求头发送，费用由你的账户承担，不会写入服务器。
+2. **服务端配置（兜底）**：`.env.local` 中配置 `DEEPSEEK_API_KEY`。仅当客户端未提供 Key 时使用，适合开发调试或自托管演示。
+
+> 部署给客户使用时，建议**不要**配置服务端 Key，让每个客户使用自己的 Key。
 
 ### 生产构建
 

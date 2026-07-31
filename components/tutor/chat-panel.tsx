@@ -3,13 +3,24 @@
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Send, Bot, User, Loader2, Trash2 } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Send, Bot, User, Loader2, Trash2, KeyRound } from "lucide-react";
 import { useToast } from "@/components/toast-provider";
 
 const CHAT_STORAGE_KEY = "ai-tutor-chat-history";
+const API_KEY_STORAGE_KEY = "ai-tutor-api-key";
 const WELCOME_MESSAGE: Message = {
   role: "assistant",
   content: "你好！我是你的 AI 编程助教 👋\n\n有问题随时问我，我会用提问的方式帮你思考，而不是直接给答案。你想学什么？",
@@ -36,6 +47,16 @@ export function ChatPanel() {
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [streaming, setStreaming] = useState("");
+  const [apiKey, setApiKey] = useState<string>(() => {
+    if (typeof window !== "undefined") {
+      try {
+        return localStorage.getItem(API_KEY_STORAGE_KEY) || "";
+      } catch {}
+    }
+    return "";
+  });
+  const [keyDraft, setKeyDraft] = useState("");
+  const [keyDialogOpen, setKeyDialogOpen] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const abortRef = useRef<AbortController | null>(null);
   const { error: toastError, success: toastSuccess } = useToast();
@@ -77,7 +98,10 @@ export function ChatPanel() {
     try {
       const res = await fetch("/api/ai/chat/stream", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          ...(apiKey ? { "x-api-key": apiKey } : {}),
+        },
         body: JSON.stringify({ message: userMessage }),
         signal: controller.signal,
       });
@@ -143,6 +167,30 @@ export function ChatPanel() {
     toastSuccess("对话历史已清除");
   }
 
+  function saveApiKey() {
+    const trimmed = keyDraft.trim();
+    try {
+      if (trimmed) {
+        localStorage.setItem(API_KEY_STORAGE_KEY, trimmed);
+      } else {
+        localStorage.removeItem(API_KEY_STORAGE_KEY);
+      }
+    } catch {}
+    setApiKey(trimmed);
+    setKeyDialogOpen(false);
+    setKeyDraft("");
+    toastSuccess(trimmed ? "API Key 已保存（仅存于本浏览器）" : "API Key 已清除");
+  }
+
+  function clearApiKey() {
+    try {
+      localStorage.removeItem(API_KEY_STORAGE_KEY);
+    } catch {}
+    setApiKey("");
+    setKeyDraft("");
+    toastSuccess("API Key 已清除");
+  }
+
   return (
     <Card className="h-[500px] flex flex-col">
       <CardHeader className="pb-3">
@@ -152,6 +200,56 @@ export function ChatPanel() {
           <span className="text-xs text-muted-foreground font-normal ml-auto">
             流式输出
           </span>
+          <Dialog open={keyDialogOpen} onOpenChange={setKeyDialogOpen}>
+            <DialogTrigger render={
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-7 w-7 relative"
+                title={apiKey ? "已配置 API Key（点击修改）" : "未配置 API Key（点击设置）"}
+              >
+                <KeyRound className={`w-3.5 h-3.5 ${apiKey ? "text-emerald-500" : "text-muted-foreground"}`} />
+                {apiKey && (
+                  <span className="absolute top-0.5 right-0.5 w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                )}
+              </Button>
+            } />
+            <DialogContent className="sm:max-w-md">
+              <DialogHeader>
+                <DialogTitle>API Key 设置</DialogTitle>
+                <DialogDescription>
+                  填写你自己的 DeepSeek API Key，费用由你自己的账户承担。
+                  Key 仅保存在本浏览器（localStorage），通过请求头发送，不会写入服务器。
+                </DialogDescription>
+              </DialogHeader>
+              <Input
+                type="password"
+                value={keyDraft}
+                onChange={(e) => setKeyDraft(e.target.value)}
+                placeholder="sk-..."
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") saveApiKey();
+                }}
+              />
+              {apiKey && (
+                <p className="text-xs text-muted-foreground">
+                  当前已配置：sk-...{apiKey.slice(-4)}
+                  <button
+                    className="text-destructive underline ml-2"
+                    onClick={clearApiKey}
+                  >
+                    清除
+                  </button>
+                </p>
+              )}
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setKeyDialogOpen(false)}>
+                  取消
+                </Button>
+                <Button onClick={saveApiKey}>保存</Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
           <Button
             variant="ghost"
             size="icon"

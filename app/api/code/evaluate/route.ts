@@ -22,6 +22,10 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "请指定题目 ID" }, { status: 400 });
     }
 
+    // BYOK：客户请求头里的 key 优先，未提供则回退服务端配置
+    const apiKey =
+      req.headers.get("x-api-key")?.trim() || getDeepSeekApiKey();
+
     // 加载题目
     const exercise = getExercise(exerciseId);
     if (!exercise) {
@@ -50,8 +54,8 @@ export async function POST(req: NextRequest) {
 
     // 3. AI 代码 Review（可选，仅在失败时触发）
     let aiReview: string | null = null;
-    if (!allPassed) {
-      aiReview = await getAiReview(code, exercise, results);
+    if (!allPassed && apiKey) {
+      aiReview = await getAiReview(code, exercise, results, apiKey);
     }
 
     return NextResponse.json({
@@ -160,12 +164,10 @@ function runTestCase(
 async function getAiReview(
   code: string,
   exercise: { title: string; description: string; hints: string[] },
-  results: TestResult[]
+  results: TestResult[],
+  apiKey: string
 ): Promise<string | null> {
   try {
-    const apiKey = getDeepSeekApiKey();
-    if (!apiKey) return null;
-
     const prompt = `你是一个编程教学助手。学生正在做一道练习题，但代码没有通过测试。
 
 题目：${exercise.title}

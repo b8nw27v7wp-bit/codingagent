@@ -29,4 +29,6 @@ export interface ChatOptions {
   temperature?: number;
   maxTokens?: number;
   timeout?: number;
+  /** 客户自带的 API Key（BYOK），优先于服务端配置 */
+  apiKey?: string;
 }

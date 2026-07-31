@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import { getDeepSeekApiKey } from "@/lib/api-key";
+import { resolveApiKey } from "@/lib/api-key";
 import { buildTeachingPrompt } from "@/lib/prompts/tutor";
 
 export async function POST(request: NextRequest) {
@@ -12,9 +12,10 @@ export async function POST(request: NextRequest) {
     });
   }
 
-  const apiKey = getDeepSeekApiKey();
+  // BYOK：优先客户请求头里的 key，未提供则回退服务端配置
+  const apiKey = resolveApiKey(request);
   if (!apiKey) {
-    return new Response(JSON.stringify({ error: "API Key 未配置" }), {
+    return new Response(JSON.stringify({ error: "API Key 未配置：请先填写你自己的 DeepSeek API Key" }), {
       status: 500,
       headers: { "Content-Type": "application/json" },
     });

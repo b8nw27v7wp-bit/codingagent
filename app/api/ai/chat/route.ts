@@ -20,6 +20,8 @@ export async function POST(request: NextRequest) {
     const result = await chat(messages, {
       temperature: 0.7,
       maxTokens: 2048,
+      // BYOK：客户请求头里的 key 优先，未提供时 provider 内部回退服务端配置
+      apiKey: request.headers.get("x-api-key")?.trim() || undefined,
     });
 
     return NextResponse.json({

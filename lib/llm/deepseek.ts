@@ -13,15 +13,17 @@ export const deepseekProvider: LLMProvider = {
   name: "deepseek",
 
   async chat(messages: ChatMessage[], options: ChatOptions = {}): Promise<LLMResponse> {
-    const apiKey = getDeepSeekApiKey();
-    if (!apiKey) throw new Error("DEEPSEEK_API_KEY 未配置");
-
     const {
       model = DEFAULT_MODEL,
       temperature = 0.7,
       maxTokens = 2048,
       timeout = 30000,
+      apiKey: clientKey,
     } = options;
+
+    // 优先客户自带 key，未提供则用服务端配置
+    const apiKey = clientKey || getDeepSeekApiKey();
+    if (!apiKey) throw new Error("API Key 未配置：请在设置中填写你自己的 DeepSeek API Key");
 
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), timeout);

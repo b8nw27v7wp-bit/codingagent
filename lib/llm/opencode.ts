@@ -19,8 +19,11 @@ export const opencodeProvider: LLMProvider = {
   name: "opencode",
 
   async chat(messages: ChatMessage[], options: ChatOptions = {}): Promise<LLMResponse> {
-    const apiKey = getDeepSeekApiKey();
-    const { model = "deepseek/deepseek-chat", timeout = 120000 } = options;
+    const { model = "deepseek/deepseek-chat", timeout = 120000, apiKey: clientKey } = options;
+
+    // 优先客户自带 key，未提供则用服务端配置
+    const apiKey = clientKey || getDeepSeekApiKey();
+    if (!apiKey) throw new Error("API Key 未配置：请先在设置中填写 API Key");
 
     // 提取 system + user 消息
     const systemMsg = messages.find(m => m.role === "system")?.content || "";
