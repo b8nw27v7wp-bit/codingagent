@@ -20,7 +20,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "AI 编程教学助手",
-  description: "基于大语言模型的编程初学者智能辅导系统——本科毕业设计项目",
+  description: "基于大语言模型的编程初学者智能辅导系统",
 };
 
 export default function RootLayout({
@@ -79,7 +79,7 @@ export default function RootLayout({
 
               {/* 底部 */}
               <footer className="border-t py-3 text-center text-xs text-muted-foreground">
-                <p>AI 编程教学助手 — 本科毕业设计项目 © 2026</p>
+                <p>AI 编程教学助手 © 2026</p>
               </footer>
             </TooltipProvider>
           </ToastProvider>
