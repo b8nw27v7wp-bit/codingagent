@@ -1,6 +1,6 @@
 # AI 编程教学助手
 
-> 本科毕业设计项目 — 基于大语言模型的编程初学者智能辅导系统
+> 基于大语言模型的编程初学者智能辅导系统
 
 [![Next.js](https://img.shields.io/badge/Next.js-16.2-black?logo=next.js)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?logo=typescript)](https://www.typescriptlang.org/)
@@ -142,7 +142,7 @@ ai-coding-tutor/
 │       ├── manifest.json         # 课程元信息
 │       ├── 01-*.mdx ~ 10-*.mdx   # 10 节 MDX 课时
 │       └── exercises/            # 20 道练习题 (JSON)
-├── docs/                         # 毕设文档
+├── docs/                         # 项目文档
 ├── PROGRESS.md                   # 开发进度记录
 ├── ROADMAP.md                    # 后续路线图
 └── IDEA.md                       # 项目原始构想
@@ -234,20 +234,6 @@ docker build -t ai-coding-tutor .
 docker run -p 3000:3000 ai-coding-tutor
 # 客户端自带 Key；如需服务端兜底：-e DEEPSEEK_API_KEY=sk-xxx
 ```
-
----
-
-## 📝 毕设论文配合
-
-本项目是本科毕业设计的工程实现部分，配套论文需涵盖：
-
-| 论文章节 | 对应代码 |
-|---|---|
-| 系统设计 | `lib/llm/` — Provider 抽象架构 |
-| AI 教学策略 | `lib/prompts/tutor.ts` — Socratic Prompt |
-| 代码评测 | `app/api/code/evaluate/` — 沙箱 + AI Review |
-| 前端实现 | `components/tutor/` — React 组件 |
-| 测试评估 | API 响应时间、Lighthouse 评分 |
 
 ---
 
