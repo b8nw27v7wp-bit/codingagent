@@ -1,0 +1,127 @@
+---
+lesson: "05"
+title: "条件判断"
+duration: "25分钟"
+---
+
+## 学习目标
+
+- 🎯 掌握 `if / else if / else` 判断结构
+- 🎯 学会使用比较运算符
+- 🎯 理解逻辑运算符 `&&`、`||`、`!`
+
+---
+
+## if 语句
+
+程序经常需要"看情况执行"——这就是**条件判断**：
+
+```javascript
+const score = 85;
+
+if (score >= 60) {
+  console.log("及格了！");
+}
+```
+
+> `if (条件)` 后面的 `{ }` 里，是条件为 `true` 时要执行的代码。
+
+---
+
+## if / else
+
+加一个"否则"分支：
+
+```javascript
+const score = 45;
+
+if (score >= 60) {
+  console.log("及格了！");
+} else {
+  console.log("没及格，继续加油");
+}
+```
+
+---
+
+## 比较运算符
+
+| 运算符 | 含义 | 示例 |
+|--------|------|------|
+| `===` | 严格相等（值+类型） | `5 === 5` → true |
+| `!==` | 严格不相等 | `5 !== 6` → true |
+| `>` / `<` | 大于 / 小于 | `7 > 5` → true |
+| `>=` / `<=` | 大于等于 / 小于等于 | `5 >= 5` → true |
+
+> ⚠️ 判断相等用 **`===`**（三个等号），不要用 `==`（两个等号有类型转换的坑）。
+
+---
+
+## else if 多分支
+
+```javascript
+const score = 88;
+
+if (score >= 90) {
+  console.log("优秀");
+} else if (score >= 80) {
+  console.log("良好");
+} else if (score >= 60) {
+  console.log("及格");
+} else {
+  console.log("不及格");
+}
+```
+
+---
+
+## 逻辑运算符
+
+多个条件组合使用：
+
+```javascript
+const age = 20;
+const hasId = true;
+
+// && 两个条件都满足才为 true
+if (age >= 18 && hasId) {
+  console.log("可以入场");
+}
+
+// || 只要一个满足就为 true
+const isMember = false;
+if (isMember || age >= 18) {
+  console.log("满足进入条件");
+}
+
+// ! 取反
+if (!isMember) {
+  console.log("不是会员");
+}
+```
+
+---
+
+## 试试看 ✏️
+
+```javascript
+// 判断一个数是奇数还是偶数
+const n = 7;
+
+if (n % 2 === 0) {
+  console.log(`${n} 是偶数`);
+} else {
+  console.log(`${n} 是奇数`);
+}
+```
+
+运行看看。
+
+---
+
+## 小结
+
+- `if / else if / else` 实现多分支判断
+- 相等判断用 `===`，不等用 `!==`
+- `&&` 全部满足、`||` 任一满足、`!` 取反
+- 用 `% 2` 判断奇偶

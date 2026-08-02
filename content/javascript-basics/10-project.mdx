@@ -1,0 +1,110 @@
+---
+lesson: "10"
+title: "综合项目：学生成绩统计系统"
+duration: "45分钟"
+---
+
+## 学习目标
+
+- 🎯 综合运用数组、对象、循环、函数、条件
+- 🎯 完成一个完整的小项目
+- 🎯 学会分解问题、逐步实现
+
+---
+
+## 项目需求
+
+写一个程序：读取若干学生的姓名和成绩，输出：
+
+1. 每个学生的成绩和评级（≥90 优秀、≥80 良好、≥60 及格、<60 不及格）
+2. 全班平均分
+3. 最高分学生的姓名
+
+**输入格式**（第一行是人数，之后每行是"姓名 成绩"）：
+
+```
+3
+小明 95
+小红 82
+小刚 58
+```
+
+**输出格式**：
+
+```
+小明 95 优秀
+小红 82 良好
+小刚 58 不及格
+平均分：78.3
+最高分：小明
+```
+
+---
+
+## 分解问题
+
+一个复杂问题拆成几步：
+
+1. **读取输入**：先读人数，再循环读每行
+2. **存数据**：用对象数组保存 { name, score }
+3. **评级**：写一个函数 `getGrade(score)` 返回评级
+4. **统计**：求和算平均，打擂台找最高分
+
+---
+
+## 参考实现（先自己试，卡住了再看）
+
+```javascript
+const fs = require("fs");
+const lines = fs.readFileSync(0, "utf-8").trim().split("\n");
+
+const n = Number(lines[0]);
+const students = [];
+
+for (let i = 1; i <= n; i++) {
+  const [name, scoreStr] = lines[i].split(" ");
+  students.push({ name, score: Number(scoreStr) });
+}
+
+function getGrade(score) {
+  if (score >= 90) return "优秀";
+  if (score >= 80) return "良好";
+  if (score >= 60) return "及格";
+  return "不及格";
+}
+
+let sum = 0;
+let maxStudent = students[0];
+
+for (const s of students) {
+  sum += s.score;
+  console.log(`${s.name} ${s.score} ${getGrade(s.score)}`);
+  if (s.score > maxStudent.score) {
+    maxStudent = s;
+  }
+}
+
+const avg = (sum / n).toFixed(1);
+console.log(`平均分：${avg}`);
+console.log(`最高分：${maxStudent.name}`);
+```
+
+---
+
+## 提示
+
+- 输入里"姓名 成绩"用**空格**分隔，用 `split(" ")` 拆开
+- `Number(字符串)` 把字符串转成数字
+- 平均分保留 1 位小数用 `.toFixed(1)`
+- 先实现评级函数，再写统计逻辑，分步验证
+
+---
+
+## 完成标准
+
+- ✅ 正确读取任意人数（不只 3 人）
+- ✅ 评级规则正确
+- ✅ 平均分保留 1 位小数
+- ✅ 最高分是**姓名**而不是分数
+
+做完这题，你就掌握了 JavaScript 的核心语法！🎉

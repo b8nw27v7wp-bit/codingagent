@@ -1,0 +1,14 @@
+{
+  "id": "javascript-basics-02-01",
+  "courseId": "javascript-basics",
+  "lessonId": "02",
+  "title": "变量与常量",
+  "description": "用 const 声明常量 age 为 18，用 let 声明变量 score 为 60，然后把 score 改成 90。输出：'年龄：18' 和 '分数：90'",
+  "testCases": [
+    { "input": "", "expected": "年龄：18\n分数：90" }
+  ],
+  "hints": [
+    "const 声明的值不能改，let 声明的可以改",
+    "用 console.log('年龄：' + age) 拼接输出"
+  ]
+}

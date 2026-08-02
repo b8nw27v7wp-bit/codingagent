@@ -1,0 +1,14 @@
+{
+  "id": "javascript-basics-07-01",
+  "courseId": "javascript-basics",
+  "lessonId": "07",
+  "title": "数组求和",
+  "description": "有一个数组 [10, 20, 30, 40, 50]，用循环计算所有元素的和并输出。输出：150",
+  "testCases": [
+    { "input": "", "expected": "150" }
+  ],
+  "hints": [
+    "const nums = [10, 20, 30, 40, 50]",
+    "for (let i = 0; i < nums.length; i++) 遍历，累加到 sum"
+  ]
+}

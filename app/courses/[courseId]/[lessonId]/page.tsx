@@ -99,6 +99,7 @@ export default async function LessonPage({
           exercises={exercises}
           courseId={courseId}
           lessonId={lessonId}
+          language={course.language || "python"}
         />
       )}
 

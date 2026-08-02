@@ -1,0 +1,114 @@
+---
+lesson: "07"
+title: "数组"
+duration: "25分钟"
+---
+
+## 学习目标
+
+- 🎯 理解数组是什么
+- 🎯 掌握数组的增删改查
+- 🎯 学会用循环遍历数组
+
+---
+
+## 什么是数组？
+
+数组是一个**有序的列表**，可以存放多个值：
+
+```javascript
+const fruits = ["苹果", "香蕉", "橙子"];
+const scores = [95, 87, 78, 92];
+```
+
+> 想象一排放了编号的格子，从 **0** 开始编号。第一个元素的下标是 0，第二个是 1……
+
+---
+
+## 访问和修改
+
+```javascript
+const fruits = ["苹果", "香蕉", "橙子"];
+
+console.log(fruits[0]);   // 苹果（下标 0 是第一个）
+console.log(fruits[1]);   // 香蕉
+console.log(fruits.length); // 3（数组长度）
+
+fruits[1] = "葡萄";        // 修改下标 1 的元素
+console.log(fruits);       // ["苹果", "葡萄", "橙子"]
+```
+
+---
+
+## 增删元素
+
+```javascript
+const list = [];
+
+list.push("Java");        // 末尾添加 → ["Java"]
+list.push("Python");      // → ["Java", "Python"]
+list.push("JavaScript");  // → ["Java", "Python", "JavaScript"]
+
+list.pop();               // 删除末尾 → ["Java", "Python"]
+
+console.log(list);
+```
+
+常用方法：
+
+| 方法 | 作用 |
+|------|------|
+| `push(x)` | 末尾添加 |
+| `pop()` | 删除末尾并返回 |
+| `unshift(x)` | 开头添加 |
+| `shift()` | 删除开头并返回 |
+| `indexOf(x)` | 查找下标，找不到返回 -1 |
+| `includes(x)` | 是否包含，返回 true/false |
+
+---
+
+## 遍历数组
+
+配合循环：
+
+```javascript
+const scores = [95, 87, 78, 92];
+let sum = 0;
+
+for (let i = 0; i < scores.length; i++) {
+  sum += scores[i];
+}
+
+console.log(`平均分：${sum / scores.length}`);
+```
+
+> `scores.length` 是数组长度，`i < scores.length` 保证访问到最后一个元素（下标 length-1）。
+
+---
+
+## 试试看 ✏️
+
+```javascript
+// 找出数组中的最大值
+const nums = [12, 45, 7, 32, 19];
+let max = nums[0];
+
+for (let i = 1; i < nums.length; i++) {
+  if (nums[i] > max) {
+    max = nums[i];
+  }
+}
+
+console.log(`最大值是 ${max}`);
+```
+
+运行看看。
+
+---
+
+## 小结
+
+- 数组用 `[]` 表示，下标从 0 开始
+- `arr[i]` 访问、`arr.length` 长度、`push/pop` 增删
+- 用 `for (let i = 0; i < arr.length; i++)` 遍历
+- "打擂台"法找最大值：先假设第一个最大，逐个比较

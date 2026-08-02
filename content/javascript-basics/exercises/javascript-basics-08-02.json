@@ -1,0 +1,14 @@
+{
+  "id": "javascript-basics-08-02",
+  "courseId": "javascript-basics",
+  "lessonId": "08",
+  "title": "圆面积函数",
+  "description": "定义函数 circleArea(r) 用 3.14 作为圆周率计算圆面积，输出 circleArea(2) 和 circleArea(3) 的结果。输出：12.56 和 28.26（各占一行）",
+  "testCases": [
+    { "input": "", "expected": "12.56\n28.26" }
+  ],
+  "hints": [
+    "面积 = 3.14 * r * r",
+    "function circleArea(r) { return 3.14 * r * r; }"
+  ]
+}

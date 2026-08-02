@@ -1,0 +1,69 @@
+{
+  "id": "javascript-basics",
+  "title": "JavaScript 基础语法",
+  "description": "从零开始学习 JavaScript 编程，适合有少量编程概念或想学 Web 开发的初学者。共 10 课时，覆盖变量、条件、循环、函数、数组、对象等核心概念，使用 Node.js 运行。",
+  "level": "beginner",
+  "language": "javascript",
+  "lessons": [
+    {
+      "id": "01",
+      "file": "01-hello-world.mdx",
+      "title": "认识 JavaScript",
+      "duration": "15分钟"
+    },
+    {
+      "id": "02",
+      "file": "02-variables.mdx",
+      "title": "变量与常量",
+      "duration": "20分钟"
+    },
+    {
+      "id": "03",
+      "file": "03-data-types.mdx",
+      "title": "数据类型",
+      "duration": "25分钟"
+    },
+    {
+      "id": "04",
+      "file": "04-input-output.mdx",
+      "title": "输入与输出",
+      "duration": "20分钟"
+    },
+    {
+      "id": "05",
+      "file": "05-conditionals.mdx",
+      "title": "条件判断",
+      "duration": "25分钟"
+    },
+    {
+      "id": "06",
+      "file": "06-loops.mdx",
+      "title": "循环结构",
+      "duration": "30分钟"
+    },
+    {
+      "id": "07",
+      "file": "07-arrays.mdx",
+      "title": "数组",
+      "duration": "25分钟"
+    },
+    {
+      "id": "08",
+      "file": "08-functions.mdx",
+      "title": "函数",
+      "duration": "30分钟"
+    },
+    {
+      "id": "09",
+      "file": "09-objects.mdx",
+      "title": "对象",
+      "duration": "25分钟"
+    },
+    {
+      "id": "10",
+      "file": "10-project.mdx",
+      "title": "综合项目：学生成绩统计系统",
+      "duration": "45分钟"
+    }
+  ]
+}

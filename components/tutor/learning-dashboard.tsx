@@ -18,10 +18,6 @@ interface CourseInfo {
   totalExercises: number;
 }
 
-const COURSES: CourseInfo[] = [
-  { id: "python-basics", title: "Python 基础语法", totalLessons: 10, totalExercises: 20 },
-];
-
 function loadAllProgress(): Record<string, CourseProgress> {
   if (typeof window === "undefined") return {};
   try {
@@ -34,9 +30,20 @@ function loadAllProgress(): Record<string, CourseProgress> {
 
 export function LearningDashboard() {
   const [mounted, setMounted] = useState(false);
+  const [courses, setCourses] = useState<CourseInfo[]>([]);
   const [progress, setProgress] = useState<Record<string, CourseProgress>>({});
 
   useEffect(() => {
+    // 动态加载课程列表（服务端 manifest 为准）
+    fetch("/api/courses")
+      .then((res) => res.json())
+      .then((data) => {
+        if (Array.isArray(data?.courses)) {
+          setCourses(data.courses);
+        }
+      })
+      .catch(() => {});
+
     setProgress(loadAllProgress());
     setMounted(true);
 
@@ -54,12 +61,20 @@ export function LearningDashboard() {
     );
   }
 
+  if (courses.length === 0) {
+    return (
+      <Card className="h-[400px] flex items-center justify-center">
+        <p className="text-muted-foreground">暂无课程数据</p>
+      </Card>
+    );
+  }
+
   let totalLessons = 0;
   let completedLessons = 0;
   let totalExercises = 0;
   let completedExercises = 0;
 
-  const courseStats = COURSES.map((course) => {
+  const courseStats = courses.map((course) => {
     const p = progress[course.id];
     const cl = p?.completedLessons.length || 0;
     const ce = p?.completedExercises.length || 0;

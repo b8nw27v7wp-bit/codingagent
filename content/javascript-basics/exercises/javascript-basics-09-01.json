@@ -1,0 +1,14 @@
+{
+  "id": "javascript-basics-09-01",
+  "courseId": "javascript-basics",
+  "lessonId": "09",
+  "title": "手机对象",
+  "description": "创建对象 phone：{ brand: '小米', price: 1999 }，输出两行：'品牌：小米' 和 '价格：1999 元'",
+  "testCases": [
+    { "input": "", "expected": "品牌：小米\n价格：1999 元" }
+  ],
+  "hints": [
+    "访问属性用点语法：phone.brand",
+    "console.log('品牌：' + phone.brand)"
+  ]
+}

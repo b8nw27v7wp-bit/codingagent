@@ -1,0 +1,18 @@
+{
+  "id": "javascript-basics-05-01",
+  "courseId": "javascript-basics",
+  "lessonId": "05",
+  "title": "成绩评级",
+  "description": "读取一个分数（0-100 的整数），输出评级：≥90 优秀、≥80 良好、≥60 及格、<60 不及格",
+  "testCases": [
+    { "input": "95", "expected": "优秀" },
+    { "input": "85", "expected": "良好" },
+    { "input": "62", "expected": "及格" },
+    { "input": "45", "expected": "不及格" }
+  ],
+  "hints": [
+    "用 if / else if / else 判断",
+    "先读输入：const score = Number(require('fs').readFileSync(0, 'utf-8').trim())",
+    "判断顺序从高分到低分"
+  ]
+}

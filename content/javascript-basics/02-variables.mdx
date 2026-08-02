@@ -1,0 +1,89 @@
+---
+lesson: "02"
+title: "变量与常量"
+duration: "20分钟"
+---
+
+## 学习目标
+
+- 🎯 理解什么是变量
+- 🎯 掌握 `let` / `const` 声明变量
+- 🎯 理解变量命名规则
+
+---
+
+## 什么是变量？
+
+变量就像一个**贴了标签的盒子**，你可以把数据放进去，之后随时取用或更换内容。
+
+```javascript
+let 年龄 = 18;       // ❌ 不推荐用中文命名，但 JS 允许
+let age = 18;        // ✅ 推荐：英文命名
+```
+
+> 想象一个储物柜：`let` 是"租一个柜子"，`age` 是柜子上的标签，`18` 是放进去的东西。
+
+---
+
+## let 和 const
+
+JavaScript 声明变量有两种方式：
+
+```javascript
+// let：值可以改变（可变）
+let score = 60;
+score = 90;          // ✅ 可以重新赋值
+console.log(score);  // 90
+
+// const：值不可改变（常量）
+const PI = 3.14;
+PI = 3.14159;        // ❌ 报错！const 不能重新赋值
+```
+
+**规则：**
+- 优先用 `const`，只有确定值会变时才用 `let`
+- 不用 `var`（旧语法，有坑，初学者跳过）
+
+---
+
+## 命名规则
+
+变量名要**见名知意**：
+
+| 规则 | 示例 |
+|------|------|
+| 只含字母、数字、`_`、`$` | `myName` ✅，`my-name` ❌ |
+| 不能以数字开头 | `1st` ❌，`first` ✅ |
+| 不能是保留字 | `let`、`const`、`if` ❌ |
+| 用驼峰命名（多个单词） | `myStudentCount` ✅ |
+
+```javascript
+const userName = "小明";       // 两个单词：user + Name
+const totalScore = 95;
+const isPassed = true;
+```
+
+---
+
+## 试试看 ✏️
+
+```javascript
+// 声明一个常量保存你的名字
+const myName = "小明";
+
+// 声明一个 let 变量保存分数，然后更新它
+let myScore = 80;
+myScore = 95;
+
+console.log(myName + " 的分数是 " + myScore);
+```
+
+运行看看输出。
+
+---
+
+## 小结
+
+- `let` 声明可变变量，`const` 声明不可变常量
+- 变量名用驼峰命名法，见名知意
+- 优先使用 `const`

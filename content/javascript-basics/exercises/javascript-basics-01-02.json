@@ -1,0 +1,14 @@
+{
+  "id": "javascript-basics-01-02",
+  "courseId": "javascript-basics",
+  "lessonId": "01",
+  "title": "两行自我介绍",
+  "description": "用两次 console.log() 输出两行文字：第一行 '我叫 JavaScript'，第二行 '我正在学编程'",
+  "testCases": [
+    { "input": "", "expected": "我叫 JavaScript\n我正在学编程" }
+  ],
+  "hints": [
+    "每行文字用一次 console.log()",
+    "字符串要用引号包住"
+  ]
+}

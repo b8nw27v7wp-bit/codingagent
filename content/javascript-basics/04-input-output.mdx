@@ -1,0 +1,87 @@
+---
+lesson: "04"
+title: "输入与输出"
+duration: "20分钟"
+---
+
+## 学习目标
+
+- 🎯 掌握 `console.log` 的进阶用法
+- 🎯 学会使用模板字符串
+- 🎯 了解如何从命令行读取输入
+
+---
+
+## 模板字符串
+
+反引号 `` ` `` 包住的字符串叫**模板字符串**，可以在里面直接用 `${变量}` 插入值：
+
+```javascript
+const name = "小明";
+const age = 18;
+
+// 传统拼接
+console.log("我叫 " + name + "，今年 " + age + " 岁");
+
+// 模板字符串（更清晰）
+console.log(`我叫 ${name}，今年 ${age} 岁`);
+```
+
+> 模板字符串里的 `${...}` 甚至可以放表达式：`${1 + 2}` → `3`。
+
+---
+
+## 读取输入（Node.js）
+
+Node.js 中用 `readline` 模块读取用户输入：
+
+```javascript
+const readline = require("readline");
+
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout,
+});
+
+rl.question("请输入你的名字：", (answer) => {
+  console.log(`你好，${answer}！`);
+  rl.close();
+});
+```
+
+> ⚠️ 注意：在我们的练习环境中，输入通过**测试用例**提供，你只需要用 `console.log` 输出结果。上面的 `readline` 代码仅供了解。
+
+---
+
+## 练习环境的约定
+
+做练习时，程序从**标准输入（stdin）**读取数据，把结果**打印到控制台**。例如题目"读取两个数并输出它们的和"：
+
+```javascript
+// 假设输入："3 5"（一行，两个数用空格分隔）
+const input = require("fs").readFileSync(0, "utf-8").trim();
+const [a, b] = input.split(" ").map(Number);
+console.log(a + b);
+```
+
+> 这段读取输入的写法先记下来，后面的练习题会用到。注意我们的沙箱环境允许 `readFileSync(0)` 读取标准输入。
+
+---
+
+## 试试看 ✏️
+
+```javascript
+const hobby = "编程";
+const years = 2;
+console.log(`我的爱好是${hobby}，已经学了${years}年！`);
+```
+
+运行看看模板字符串的输出。
+
+---
+
+## 小结
+
+- 模板字符串用反引号和 `${}` 插入变量，比 `+` 拼接更清晰
+- Node.js 程序从 stdin 读输入，用 `console.log` 输出
+- 练习环境用 `readFileSync(0, "utf-8")` 读取全部输入

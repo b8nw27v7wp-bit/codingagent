@@ -1,0 +1,15 @@
+{
+  "id": "javascript-basics-06-02",
+  "courseId": "javascript-basics",
+  "lessonId": "06",
+  "title": "打印 1 到 N",
+  "description": "读取一个整数 n，用循环输出 1 到 n，每行一个数字。输入：3，输出：1、2、3（各占一行）",
+  "testCases": [
+    { "input": "3", "expected": "1\n2\n3" },
+    { "input": "5", "expected": "1\n2\n3\n4\n5" }
+  ],
+  "hints": [
+    "for 循环从 1 循环到 n",
+    "每次循环 console.log(i) 就会自动换行"
+  ]
+}

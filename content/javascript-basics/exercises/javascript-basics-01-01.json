@@ -1,0 +1,14 @@
+{
+  "id": "javascript-basics-01-01",
+  "courseId": "javascript-basics",
+  "lessonId": "01",
+  "title": "第一个 JavaScript 程序",
+  "description": "使用 console.log() 输出一句问候语 'Hello, World!'",
+  "testCases": [
+    { "input": "", "expected": "Hello, World!" }
+  ],
+  "hints": [
+    "console.log() 可以把括号里的内容显示在控制台",
+    "记得用双引号或单引号包住文字"
+  ]
+}

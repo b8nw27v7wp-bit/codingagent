@@ -1,0 +1,14 @@
+{
+  "id": "javascript-basics-03-02",
+  "courseId": "javascript-basics",
+  "lessonId": "03",
+  "title": "类型侦探",
+  "description": "用 typeof 检查这三个值的类型并输出：18、'hello'、true。每行一个结果",
+  "testCases": [
+    { "input": "", "expected": "number\nstring\nboolean" }
+  ],
+  "hints": [
+    "typeof 18 返回 'number'",
+    "console.log(typeof 18) 会输出 number"
+  ]
+}

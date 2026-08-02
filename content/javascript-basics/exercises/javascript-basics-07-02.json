@@ -1,0 +1,14 @@
+{
+  "id": "javascript-basics-07-02",
+  "courseId": "javascript-basics",
+  "lessonId": "07",
+  "title": "数组最大值",
+  "description": "有一个数组 [12, 45, 7, 32, 19]，找出最大值并输出。输出：45",
+  "testCases": [
+    { "input": "", "expected": "45" }
+  ],
+  "hints": [
+    "打擂台法：先假设 max = nums[0]",
+    "遍历剩余元素，比 max 大就更新 max"
+  ]
+}

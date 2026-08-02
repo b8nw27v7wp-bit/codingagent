@@ -1,0 +1,101 @@
+---
+lesson: "03"
+title: "数据类型"
+duration: "25分钟"
+---
+
+## 学习目标
+
+- 🎯 认识 JavaScript 的常见数据类型
+- 🎯 掌握 `typeof` 检查类型
+- 🎯 理解数字、字符串、布尔值的区别
+
+---
+
+## 常见数据类型
+
+JavaScript 里每个值都有**类型**，常见的有：
+
+```javascript
+// 数字（Number）：整数和小数都是它
+let age = 18;
+let price = 3.5;
+
+// 字符串（String）：文字，用引号包住
+let name = "小明";
+let greeting = '你好';       // 单引号也可以
+
+// 布尔值（Boolean）：只有 true / false 两个值
+let isStudent = true;
+let isFinished = false;
+```
+
+---
+
+## 用 typeof 检查类型
+
+不确定一个值的类型？用 `typeof`：
+
+```javascript
+console.log(typeof 18);        // number
+console.log(typeof "hello");   // string
+console.log(typeof true);      // boolean
+```
+
+---
+
+## 字符串拼接
+
+用 `+` 可以把字符串连起来：
+
+```javascript
+const firstName = "张";
+const lastName = "小明";
+console.log(firstName + lastName);        // 张小明
+
+const age = 18;
+console.log("我今年 " + age + " 岁");      // 数字会自动转成字符串
+```
+
+> 模板字符串（反引号）更现代，第 4 课会学到。
+
+---
+
+## 数字运算
+
+JavaScript 数字支持常见运算：
+
+```javascript
+console.log(7 + 3);    // 10 加法
+console.log(7 - 3);    // 4  减法
+console.log(7 * 3);    // 21 乘法
+console.log(7 / 2);    // 3.5 除法（注意结果是小数）
+console.log(7 % 3);    // 1  取余（7 除以 3 余 1）
+console.log(2 ** 3);   // 8  幂运算（2 的 3 次方）
+```
+
+---
+
+## 试试看 ✏️
+
+```javascript
+// 计算购买 3 本书的总价
+const price = 29.9;
+const count = 3;
+const total = price * count;
+console.log("总价：" + total + " 元");
+
+// 检查你的数据类型
+console.log(typeof total);
+```
+
+运行看看结果。
+
+---
+
+## 小结
+
+- 常见类型：number（数字）、string（字符串）、boolean（布尔）
+- `typeof 值` 可以检查类型
+- 字符串用 `+` 拼接，数字用 `+ - * / %` 运算
+- 除法结果可能是小数，用 `%` 取余数

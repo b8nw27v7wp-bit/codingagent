@@ -1,0 +1,14 @@
+{
+  "id": "javascript-basics-02-02",
+  "courseId": "javascript-basics",
+  "lessonId": "02",
+  "title": "计算购物总价",
+  "description": "用 const 声明 price 为 29.9，count 为 3，计算总价并输出。输出格式：'总价：89.7 元'",
+  "testCases": [
+    { "input": "", "expected": "总价：89.7 元" }
+  ],
+  "hints": [
+    "总价 = price * count",
+    "用 console.log 拼接输出，注意格式要和预期完全一致"
+  ]
+}

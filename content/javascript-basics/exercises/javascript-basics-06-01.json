@@ -1,0 +1,17 @@
+{
+  "id": "javascript-basics-06-01",
+  "courseId": "javascript-basics",
+  "lessonId": "06",
+  "title": "1 到 N 求和",
+  "description": "读取一个整数 n，用 for 循环计算 1+2+...+n 并输出。输入：5，输出：15",
+  "testCases": [
+    { "input": "5", "expected": "15" },
+    { "input": "100", "expected": "5050" },
+    { "input": "1", "expected": "1" }
+  ],
+  "hints": [
+    "先读输入：const n = Number(require('fs').readFileSync(0, 'utf-8').trim())",
+    "let sum = 0，然后 for (let i = 1; i <= n; i++) sum += i",
+    "最后 console.log(sum)"
+  ]
+}

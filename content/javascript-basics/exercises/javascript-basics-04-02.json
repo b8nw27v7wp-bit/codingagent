@@ -1,0 +1,17 @@
+{
+  "id": "javascript-basics-04-02",
+  "courseId": "javascript-basics",
+  "lessonId": "04",
+  "title": "读取两个数求和",
+  "description": "从输入读取两个整数（空格分隔），输出它们的和。输入示例：'3 5'，输出：8",
+  "testCases": [
+    { "input": "3 5", "expected": "8" },
+    { "input": "10 20", "expected": "30" },
+    { "input": "-1 1", "expected": "0" }
+  ],
+  "hints": [
+    "用 require('fs').readFileSync(0, 'utf-8') 读取全部输入",
+    "用 split(' ') 拆分成数组，再用 Number() 转数字",
+    "参考第 4 课：const [a, b] = input.split(' ').map(Number)"
+  ]
+}

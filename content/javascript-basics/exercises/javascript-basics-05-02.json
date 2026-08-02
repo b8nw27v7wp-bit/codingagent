@@ -1,0 +1,16 @@
+{
+  "id": "javascript-basics-05-02",
+  "courseId": "javascript-basics",
+  "lessonId": "05",
+  "title": "奇偶判断",
+  "description": "读取一个整数，输出它是'偶数'还是'奇数'",
+  "testCases": [
+    { "input": "8", "expected": "偶数" },
+    { "input": "7", "expected": "奇数" },
+    { "input": "0", "expected": "偶数" }
+  ],
+  "hints": [
+    "用 % 2 判断：n % 2 === 0 是偶数",
+    "严格相等用 === 而不是 =="
+  ]
+}

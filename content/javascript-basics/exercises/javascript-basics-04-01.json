@@ -1,0 +1,14 @@
+{
+  "id": "javascript-basics-04-01",
+  "courseId": "javascript-basics",
+  "lessonId": "04",
+  "title": "模板字符串输出",
+  "description": "用模板字符串输出：'我叫小明，今年18岁'。要求使用反引号和 ${} 插入变量",
+  "testCases": [
+    { "input": "", "expected": "我叫小明，今年18岁" }
+  ],
+  "hints": [
+    "先声明 const name = '小明' 和 const age = 18",
+    "模板字符串写法：`我叫${name}，今年${age}岁`"
+  ]
+}

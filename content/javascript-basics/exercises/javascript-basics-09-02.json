@@ -1,0 +1,15 @@
+{
+  "id": "javascript-basics-09-02",
+  "courseId": "javascript-basics",
+  "lessonId": "09",
+  "title": "学生平均分",
+  "description": "有学生数组 [{name:'小明',score:95},{name:'小红',score:87},{name:'小刚',score:78}]，输出每位学生的'姓名：分数'，再输出平均分（保留 1 位小数）",
+  "testCases": [
+    { "input": "", "expected": "小明：95\n小红：87\n小刚：78\n平均分：86.7" }
+  ],
+  "hints": [
+    "用循环遍历 students，访问 students[i].name 和 .score",
+    "平均分 = 总分 / 人数，用 .toFixed(1) 保留 1 位小数",
+    "86.666... 保留 1 位是 86.7（JS 的 toFixed 四舍五入）"
+  ]
+}

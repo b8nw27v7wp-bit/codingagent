@@ -14,19 +14,77 @@ const Editor = dynamic(() => import("@monaco-editor/react"), { ssr: false });
 
 const STORAGE_KEY = "ai-tutor-code";
 
+const PYTHON_DEFAULT = `# 🎉 欢迎来到 Python 练习环境！
+# 按 Ctrl+Enter 或点击「运行」执行代码
+
+print("Hello, Python!")
+
+# 简单计算
+result = 1 + 2 + 3 + 4 + 5
+print(f"1 到 5 的和是：{result}")
+
+# 写一个循环
+for i in range(1, 6):
+    print(f"第 {i} 次循环：{i * i}")
+
+# 试试修改上面的代码，然后重新运行！
+`;
+
+const JAVASCRIPT_DEFAULT = `// 🎉 欢迎来到 JavaScript 练习环境！
+// 按 Ctrl+Enter 或点击「运行」执行代码
+
+console.log("Hello, JavaScript!");
+
+// 简单计算
+const result = 1 + 2 + 3 + 4 + 5;
+console.log(\`1 到 5 的和是：\${result}\`);
+
+// 写一个循环
+for (let i = 1; i <= 5; i++) {
+  console.log(\`第 \${i} 次循环：\${i * i}\`);
+}
+
+// 试试修改上面的代码，然后重新运行！
+`;
+
+type Language = "python" | "javascript";
+
+const LANGUAGE_INFO: Record<Language, { label: string; monaco: string; defaultCode: string; badge: string }> = {
+  python: {
+    label: "Python",
+    monaco: "python",
+    defaultCode: PYTHON_DEFAULT,
+    badge: "Python 3.11",
+  },
+  javascript: {
+    label: "JavaScript",
+    monaco: "javascript",
+    defaultCode: JAVASCRIPT_DEFAULT,
+    badge: "Node.js",
+  },
+};
+
 export function CodePlayground() {
+  const [language, setLanguage] = useState<Language>("python");
   const [code, setCode] = useState(() => {
     if (typeof window !== "undefined") {
-      return localStorage.getItem(STORAGE_KEY) || DEFAULT_CODE;
+      return localStorage.getItem(STORAGE_KEY) || PYTHON_DEFAULT;
     }
-    return DEFAULT_CODE;
+    return PYTHON_DEFAULT;
   });
   const [output, setOutput] = useState("");
   const [error, setError] = useState("");
   const [running, setRunning] = useState(false);
   const [editorMounted, setEditorMounted] = useState(false);
+  // hydration 保护：SSR 与首次客户端渲染输出一致，挂载后再渲染 Monaco
+  const [mounted, setMounted] = useState(false);
+  const [editorKey, setEditorKey] = useState(0); // 切换语言时重新挂载编辑器
   const editorRef = useRef<Parameters<OnMount>[0] | null>(null);
   const { success: toastSuccess, error: toastError } = useToast();
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // 代码变更时自动保存到 localStorage
   useEffect(() => {
@@ -44,7 +102,7 @@ export function CodePlayground() {
       const res = await fetch("/api/code/run", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ code }),
+        body: JSON.stringify({ code, language }),
       });
       const data = await res.json();
 
@@ -57,10 +115,22 @@ export function CodePlayground() {
     } finally {
       setRunning(false);
     }
-  }, [code]);
+  }, [code, language]);
+
+  function switchLanguage(next: Language) {
+    if (next === language) return;
+    setLanguage(next);
+    setCode(LANGUAGE_INFO[next].defaultCode);
+    setOutput("");
+    setError("");
+    setEditorKey((k) => k + 1); // 强制重挂载编辑器，更新语言
+    try {
+      localStorage.setItem(STORAGE_KEY, LANGUAGE_INFO[next].defaultCode);
+    } catch {}
+  }
 
   function resetCode() {
-    setCode(DEFAULT_CODE);
+    setCode(LANGUAGE_INFO[language].defaultCode);
     toastSuccess("代码已重置");
   }
 
@@ -90,7 +160,6 @@ export function CodePlayground() {
           _monaco.KeyMod.CtrlCmd | _monaco.KeyCode.KeyS,
         ],
         run: () => {
-          // 保存（实际上代码变更时已自动保存，这里做显式确认）
           localStorage.setItem(STORAGE_KEY, editor.getValue());
         },
       });
@@ -104,12 +173,28 @@ export function CodePlayground() {
         <div className="flex items-center justify-between">
           <CardTitle className="text-lg flex items-center gap-2">
             <Terminal className="w-5 h-5" />
-            Python 练习环境
+            {LANGUAGE_INFO[language].label} 练习环境
             <span className="text-xs text-muted-foreground font-normal">
-              Ctrl+Enter 运行 · Ctrl+S 保存 · Tab 缩进
+              Ctrl+Enter 运行 · Ctrl+S 保存
             </span>
           </CardTitle>
           <div className="flex items-center gap-2">
+            {/* 语言切换 */}
+            <div className="flex rounded-md border overflow-hidden">
+              {(["python", "javascript"] as Language[]).map((lang) => (
+                <button
+                  key={lang}
+                  onClick={() => switchLanguage(lang)}
+                  className={`px-2.5 py-1 text-xs transition-colors ${
+                    language === lang
+                      ? "bg-primary text-primary-foreground"
+                      : "bg-muted/50 text-muted-foreground hover:bg-muted"
+                  }`}
+                >
+                  {LANGUAGE_INFO[lang].label}
+                </button>
+              ))}
+            </div>
             <Button
               variant="ghost"
               size="sm"
@@ -119,7 +204,7 @@ export function CodePlayground() {
               <RotateCcw className="w-3 h-3" />
               重置
             </Button>
-            <Badge variant="outline">Python 3.11</Badge>
+            <Badge variant="outline">{LANGUAGE_INFO[language].badge}</Badge>
             <Button
               size="sm"
               onClick={runCode}
@@ -139,10 +224,11 @@ export function CodePlayground() {
 
       <div className="flex-1 grid grid-rows-[1fr_auto] gap-0 min-h-0">
         <div className="overflow-hidden border-y">
-          {typeof window !== "undefined" && (
+          {mounted && (
             <Editor
+              key={editorKey}
               height="100%"
-              defaultLanguage="python"
+              defaultLanguage={LANGUAGE_INFO[language].monaco}
               theme="vs-dark"
               value={code}
               onChange={(value) => setCode(value || "")}
@@ -197,19 +283,3 @@ export function CodePlayground() {
     </Card>
   );
 }
-
-const DEFAULT_CODE = `# 🎉 欢迎来到 Python 练习环境！
-# 按 Ctrl+Enter 或点击「运行」执行代码
-
-print("Hello, Python!")
-
-# 简单计算
-result = 1 + 2 + 3 + 4 + 5
-print(f"1 到 5 的和是：{result}")
-
-# 写一个循环
-for i in range(1, 6):
-    print(f"第 {i} 次循环：{i * i}")
-
-# 试试修改上面的代码，然后重新运行！
-`;

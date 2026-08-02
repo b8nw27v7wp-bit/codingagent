@@ -3,7 +3,7 @@
   "title": "Python 基础语法",
   "description": "从零开始学习 Python 编程，适合完全没有编程经验的初学者。共 10 课时，覆盖变量、条件、循环、函数等核心概念。",
   "level": "beginner",
-  "language": "zh-CN",
+  "language": "python",
   "lessons": [
     {
       "id": "01",

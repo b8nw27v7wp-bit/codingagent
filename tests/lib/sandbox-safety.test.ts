@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { isPythonCodeSafe, getBlockedPattern } from "@/lib/sandbox-safety";
+import { isPythonCodeSafe, getBlockedPattern, isCodeSafe } from "@/lib/sandbox-safety";
 
 describe("isPythonCodeSafe", () => {
   it("allows safe code", () => {
@@ -58,10 +58,62 @@ describe("isPythonCodeSafe", () => {
 
 describe("getBlockedPattern", () => {
   it("returns the blocked pattern", () => {
-    expect(getBlockedPattern("import os")).toBe("import os");
+    expect(getBlockedPattern("import os", "python")).toBe("import os");
   });
 
   it("returns null for safe code", () => {
-    expect(getBlockedPattern("print('hi')")).toBeNull();
+    expect(getBlockedPattern("print('hi')", "python")).toBeNull();
+  });
+});
+
+describe("isCodeSafe (JavaScript)", () => {
+  it("allows safe JS code", () => {
+    expect(isCodeSafe("console.log('hello')", "javascript")).toBe(true);
+    expect(isCodeSafe("let x = 1 + 2", "javascript")).toBe(true);
+    expect(isCodeSafe("for (let i = 0; i < 3; i++) console.log(i)", "javascript")).toBe(true);
+  });
+
+  it("blocks require() of non-fs modules", () => {
+    expect(isCodeSafe("const http = require('http')", "javascript")).toBe(false);
+  });
+
+  it("allows const fs = require('fs') (stdin reading prerequisite)", () => {
+    expect(isCodeSafe("const fs = require('fs')", "javascript")).toBe(true);
+  });
+
+  it("blocks child_process", () => {
+    expect(isCodeSafe("require('child_process')", "javascript")).toBe(false);
+  });
+
+  it("blocks process.", () => {
+    expect(isCodeSafe("console.log(process.env)", "javascript")).toBe(false);
+  });
+
+  it("blocks eval()", () => {
+    expect(isCodeSafe("eval('1+2')", "javascript")).toBe(false);
+  });
+
+  it("blocks fetch()", () => {
+    expect(isCodeSafe("fetch('http://x')", "javascript")).toBe(false);
+  });
+
+  it("allows console.log (not blocked by fs./path.)", () => {
+    expect(isCodeSafe("console.log('hi')", "javascript")).toBe(true);
+  });
+
+  it("allows safe stdin reading pattern", () => {
+    expect(
+      isCodeSafe('const input = require("fs").readFileSync(0, "utf-8").trim();', "javascript")
+    ).toBe(true);
+  });
+
+  it("still blocks reading real files", () => {
+    expect(
+      isCodeSafe('require("fs").readFileSync("secret.txt", "utf-8")', "javascript")
+    ).toBe(false);
+  });
+
+  it("still blocks require of other modules", () => {
+    expect(isCodeSafe("require('http')", "javascript")).toBe(false);
   });
 });

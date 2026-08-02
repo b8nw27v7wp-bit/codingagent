@@ -1,14 +1,17 @@
 /**
  * POST /api/code/evaluate
  * 代码评测：运行测试用例 + AI Review
+ * 语言由课程自动推断（python / javascript）
  */
 import { NextRequest, NextResponse } from "next/server";
-import { spawn } from "cross-spawn";
-import { writeFileSync, unlinkSync, existsSync } from "fs";
+import { writeFileSync, unlinkSync } from "fs";
 import path from "path";
+import os from "os";
 import { getExercise } from "@/lib/exercises";
+import { getCourse } from "@/lib/courses";
 import { getDeepSeekApiKey } from "@/lib/api-key";
-import { isPythonCodeSafe } from "@/lib/sandbox-safety";
+import { isCodeSafe, getBlockedPattern, type CodeLanguage } from "@/lib/sandbox-safety";
+import { runCodeWithInput, getRuntimeLabel } from "@/lib/code-runner";
 
 export async function POST(req: NextRequest) {
   try {
@@ -17,28 +20,28 @@ export async function POST(req: NextRequest) {
     if (!code || typeof code !== "string") {
       return NextResponse.json({ error: "请提供代码" }, { status: 400 });
     }
-
     if (!exerciseId || typeof exerciseId !== "string") {
       return NextResponse.json({ error: "请指定题目 ID" }, { status: 400 });
     }
 
     // BYOK：客户请求头里的 key 优先，未提供则回退服务端配置
-    const apiKey =
-      req.headers.get("x-api-key")?.trim() || getDeepSeekApiKey();
+    const apiKey = req.headers.get("x-api-key")?.trim() || getDeepSeekApiKey();
 
     // 加载题目
     const exercise = getExercise(exerciseId);
     if (!exercise) {
-      return NextResponse.json(
-        { error: `题目 ${exerciseId} 不存在` },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: `题目 ${exerciseId} 不存在` }, { status: 404 });
     }
 
+    // 从课程推断语言（默认 python 兼容旧数据）
+    const course = getCourse(exercise.courseId);
+    const language: CodeLanguage = course?.language === "javascript" ? "javascript" : "python";
+
     // 1. 安全过滤
-    if (!isPythonCodeSafe(code)) {
+    const blocked = getBlockedPattern(code, language);
+    if (blocked) {
       return NextResponse.json({
-        error: "安全限制：代码中包含不允许的操作（os/subprocess/eval/open 等）",
+        error: `安全限制：代码中包含不允许的操作（${blocked}）`,
       }, { status: 403 });
     }
 
@@ -47,7 +50,7 @@ export async function POST(req: NextRequest) {
     let allPassed = true;
 
     for (const tc of exercise.testCases) {
-      const result = await runTestCase(code, tc.input, tc.expected);
+      const result = await runTestCase(code, tc.input, tc.expected, language);
       results.push(result);
       if (!result.passed) allPassed = false;
     }
@@ -55,7 +58,7 @@ export async function POST(req: NextRequest) {
     // 3. AI 代码 Review（可选，仅在失败时触发）
     let aiReview: string | null = null;
     if (!allPassed && apiKey) {
-      aiReview = await getAiReview(code, exercise, results, apiKey);
+      aiReview = await getAiReview(code, exercise, results, apiKey, language);
     }
 
     return NextResponse.json({
@@ -85,77 +88,36 @@ interface TestResult {
 function runTestCase(
   code: string,
   input: string,
-  expected: string
+  expected: string,
+  language: CodeLanguage
 ): Promise<TestResult> {
   return new Promise((resolve) => {
-    const tmpFile = path.join(process.cwd(), ".tmp_test.py");
+    const tmpFile = path.join(os.tmpdir(), `test_${Date.now()}_${Math.random().toString(36).slice(2, 8)}${language === "javascript" ? ".js" : ".py"}`);
 
     try {
       writeFileSync(tmpFile, code, "utf-8");
     } catch {
-      resolve({
-        passed: false,
-        expected,
-        actual: "",
-        error: "无法写入临时文件",
-      });
+      resolve({ passed: false, expected, actual: "", error: "无法写入临时文件" });
       return;
     }
 
-    const child = spawn("python", [tmpFile], {
-      timeout: 8000,
-      cwd: process.cwd(),
-    });
+    const resultPromise = runCodeWithInput(code, input, language, 8000);
+    resultPromise.then((result) => {
+      try { if (tmpFile) unlinkSync(tmpFile); } catch {}
 
-    let stdout = "";
-    let stderr = "";
-
-    child.stdout.on("data", (data: Buffer) => {
-      stdout += data.toString();
-    });
-
-    child.stderr.on("data", (data: Buffer) => {
-      stderr += data.toString();
-    });
-
-    // 如果有输入，写入 stdin
-    if (input) {
-      child.stdin.write(input);
-      child.stdin.end();
-    }
-
-    child.on("close", () => {
-      // 清理临时文件
-      try {
-        if (existsSync(tmpFile)) unlinkSync(tmpFile);
-      } catch {}
-
-      if (stderr) {
+      if (result.stderr.trim()) {
         resolve({
           passed: false,
           expected,
-          actual: stdout.trim(),
-          error: stderr.trim(),
+          actual: result.stdout.trim(),
+          error: result.stderr.trim(),
         });
         return;
       }
 
-      const actual = stdout.trim();
+      const actual = result.stdout.trim();
       const passed = actual === expected.trim();
-
       resolve({ passed, expected, actual, error: null });
-    });
-
-    child.on("error", () => {
-      try {
-        if (existsSync(tmpFile)) unlinkSync(tmpFile);
-      } catch {}
-      resolve({
-        passed: false,
-        expected,
-        actual: "",
-        error: "Python 执行环境不可用",
-      });
     });
   });
 }
@@ -165,7 +127,8 @@ async function getAiReview(
   code: string,
   exercise: { title: string; description: string; hints: string[] },
   results: TestResult[],
-  apiKey: string
+  apiKey: string,
+  language: CodeLanguage
 ): Promise<string | null> {
   try {
     const prompt = `你是一个编程教学助手。学生正在做一道练习题，但代码没有通过测试。
@@ -174,7 +137,7 @@ async function getAiReview(
 要求：${exercise.description}
 
 学生的代码：
-\`\`\`python
+\`\`\`${language}
 ${code}
 \`\`\`
 
@@ -192,22 +155,19 @@ ${results
 请用鼓励的语气，用 Socratic 提问法引导学生发现问题。不要直接给出正确答案。
 用中文回答，控制在 3-5 句话内。`;
 
-    const res = await fetch(
-      "https://api.deepseek.com/v1/chat/completions",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${apiKey}`,
-        },
-        body: JSON.stringify({
-          model: "deepseek-chat",
-          messages: [{ role: "user", content: prompt }],
-          max_tokens: 300,
-        }),
-        signal: AbortSignal.timeout(15000),
-      }
-    );
+    const res = await fetch("https://api.deepseek.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${apiKey}`,
+      },
+      body: JSON.stringify({
+        model: "deepseek-chat",
+        messages: [{ role: "user", content: prompt }],
+        max_tokens: 300,
+      }),
+      signal: AbortSignal.timeout(15000),
+    });
 
     if (!res.ok) return null;
     const data = await res.json();

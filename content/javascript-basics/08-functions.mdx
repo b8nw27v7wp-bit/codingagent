@@ -1,0 +1,123 @@
+---
+lesson: "08"
+title: "函数"
+duration: "30分钟"
+---
+
+## 学习目标
+
+- 🎯 理解函数的作用
+- 🎯 掌握函数的定义和调用
+- 🎯 学会参数、返回值、默认参数
+
+---
+
+## 什么是函数？
+
+函数是**一段可复用的代码块**——把重复的逻辑打包，取个名字，需要时调用：
+
+```javascript
+// 定义函数
+function sayHello() {
+  console.log("你好！");
+}
+
+// 调用函数
+sayHello();   // 你好！
+sayHello();   // 你好！（可以反复调用）
+```
+
+---
+
+## 带参数和返回值
+
+```javascript
+// 参数：调用时传入的数据
+// 返回值：函数算出的结果，用 return 交出去
+function add(a, b) {
+  return a + b;
+}
+
+const result = add(3, 5);
+console.log(result);   // 8
+```
+
+> `return` 后面的代码不会执行。函数没有 `return` 时返回值是 `undefined`。
+
+---
+
+## 为什么用函数？
+
+- **复用**：同样的逻辑只写一次
+- **清晰**：给复杂操作起名字，主程序一目了然
+- **好改**：逻辑变了只改一处
+
+```javascript
+// 判断一个数是否是质数
+function isPrime(n) {
+  if (n < 2) return false;
+  for (let i = 2; i * i <= n; i++) {
+    if (n % i === 0) return false;
+  }
+  return true;
+}
+
+console.log(isPrime(7));   // true
+console.log(isPrime(10));  // false
+```
+
+---
+
+## 默认参数
+
+```javascript
+function greet(name, message = "你好") {
+  console.log(`${message}，${name}！`);
+}
+
+greet("小明");              // 你好，小明！
+greet("小红", "晚上好");    // 晚上好，小红！
+```
+
+---
+
+## 箭头函数（现代写法）
+
+```javascript
+// 传统写法
+function double(x) {
+  return x * 2;
+}
+
+// 箭头函数：更简洁
+const double = (x) => x * 2;
+
+console.log(double(5));   // 10
+```
+
+> 箭头函数 `=>` 是 ES6 的现代写法，函数体只有一句时可以省略 `{}` 和 `return`。
+
+---
+
+## 试试看 ✏️
+
+```javascript
+// 编写一个计算圆面积的函数
+function circleArea(radius) {
+  return 3.14 * radius * radius;
+}
+
+console.log(circleArea(2));    // 12.56
+console.log(circleArea(3));    // 28.26
+```
+
+运行看看。
+
+---
+
+## 小结
+
+- `function 函数名(参数) { ... }` 定义函数，`函数名(实参)` 调用
+- `return` 返回结果，函数体到 `return` 结束
+- 参数可以给默认值：`function f(a, b = 1)`
+- 箭头函数 `(x) => x * 2` 是更简洁的现代写法

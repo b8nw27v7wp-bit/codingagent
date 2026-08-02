@@ -1,0 +1,118 @@
+---
+lesson: "09"
+title: "对象"
+duration: "25分钟"
+---
+
+## 学习目标
+
+- 🎯 理解对象是什么
+- 🎯 掌握创建和访问对象
+- 🎯 学会修改、添加、遍历对象
+
+---
+
+## 什么是对象？
+
+对象用来表示**一个实体**的多个属性。比如一个学生有姓名、年龄、分数：
+
+```javascript
+const student = {
+  name: "小明",
+  age: 18,
+  score: 95,
+};
+
+console.log(student.name);    // 小明（点语法）
+console.log(student["age"]);  // 18（中括号语法）
+```
+
+> 对象是"键值对"的集合：`键(key): 值(value)`。键是属性名，值是数据。
+
+---
+
+## 修改和添加属性
+
+```javascript
+const student = { name: "小明", age: 18 };
+
+student.age = 19;            // 修改已有属性
+student.score = 95;          // 添加新属性
+console.log(student);
+// { name: "小明", age: 19, score: 95 }
+```
+
+---
+
+## 对象数组
+
+实际开发中，对象常常放在数组里（比如学生列表）：
+
+```javascript
+const students = [
+  { name: "小明", score: 95 },
+  { name: "小红", score: 87 },
+  { name: "小刚", score: 78 },
+];
+
+// 遍历并访问每个对象的属性
+for (let i = 0; i < students.length; i++) {
+  console.log(`${students[i].name}：${students[i].score} 分`);
+}
+```
+
+---
+
+## 综合：计算平均分
+
+```javascript
+const students = [
+  { name: "小明", score: 95 },
+  { name: "小红", score: 87 },
+  { name: "小刚", score: 78 },
+];
+
+let sum = 0;
+for (let i = 0; i < students.length; i++) {
+  sum += students[i].score;
+}
+
+const avg = sum / students.length;
+console.log(`全班平均分：${avg}`);
+
+// 找出最高分
+let max = students[0];
+for (let i = 1; i < students.length; i++) {
+  if (students[i].score > max.score) {
+    max = students[i];
+  }
+}
+console.log(`最高分：${max.name}（${max.score} 分）`);
+```
+
+---
+
+## 试试看 ✏️
+
+```javascript
+// 创建一个"手机"对象并打印
+const phone = {
+  brand: "小米",
+  price: 1999,
+  color: "黑色",
+};
+
+console.log(`品牌：${phone.brand}`);
+console.log(`价格：${phone.price} 元`);
+```
+
+运行看看。
+
+---
+
+## 小结
+
+- 对象用 `{ 键: 值 }` 创建，表示一个实体的多个属性
+- 用 `obj.属性名` 或 `obj["属性名"]` 访问
+- 可以随时修改、添加属性
+- 对象数组 + 循环遍历是处理"一组实体"的常见模式

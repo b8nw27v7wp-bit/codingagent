@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import dynamic from "next/dynamic";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -46,14 +46,22 @@ interface Props {
   exercises: Exercise[];
   courseId: string;
   lessonId: string;
+  /** 课程语言（python / javascript），决定编辑器语法与默认代码 */
+  language?: string;
 }
 
-export function ExercisePanel({ exercises, courseId, lessonId }: Props) {
+export function ExercisePanel({ exercises, courseId, lessonId, language = "python" }: Props) {
   const [currentIdx, setCurrentIdx] = useState(0);
   const [code, setCode] = useState("");
   const [evaluating, setEvaluating] = useState(false);
   const [result, setResult] = useState<EvaluationResult | null>(null);
   const [showHints, setShowHints] = useState<number>(0);
+  // hydration 保护：SSR 与首次客户端渲染输出一致，挂载后再渲染 Monaco
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const exercise = exercises[currentIdx];
 
@@ -174,10 +182,10 @@ export function ExercisePanel({ exercises, courseId, lessonId }: Props) {
 
         {/* 代码编辑器 */}
         <div className="h-[250px] border rounded-lg overflow-hidden">
-          {typeof window !== "undefined" && (
+          {mounted && (
             <Editor
               height="100%"
-              defaultLanguage="python"
+              defaultLanguage={language === "javascript" ? "javascript" : "python"}
               theme="vs-dark"
               value={code}
               onChange={(value) => setCode(value || "")}

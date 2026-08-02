@@ -20,6 +20,8 @@ export interface CourseMeta {
   title: string;
   description: string;
   level: string;
+  /** 课程使用的编程语言（python / javascript），默认 python */
+  language?: string;
   lessons: LessonMeta[];
 }
 

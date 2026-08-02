@@ -1,0 +1,14 @@
+{
+  "id": "javascript-basics-03-01",
+  "courseId": "javascript-basics",
+  "lessonId": "03",
+  "title": "数字运算",
+  "description": "计算并输出：7 加 3、7 减 3、7 乘 3、7 除以 3（保留小数）、7 对 3 取余。每行一个结果",
+  "testCases": [
+    { "input": "", "expected": "10\n4\n21\n2.3333333333333335\n1" }
+  ],
+  "hints": [
+    "分别用 + - * / % 运算",
+    "7 / 3 的结果就是 2.3333333333333335，直接输出不要四舍五入"
+  ]
+}
