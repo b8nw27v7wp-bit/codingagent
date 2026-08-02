@@ -1,11 +1,26 @@
 import { NextRequest } from "next/server";
 import { resolveApiKey } from "@/lib/api-key";
 import { buildTeachingPrompt } from "@/lib/prompts/tutor";
+import type { ChatMessage } from "@/lib/llm/provider";
+
+const MAX_HISTORY = 20;
 
 export async function POST(request: NextRequest) {
-  const { message } = await request.json();
+  const body = await request.json();
+  const { message, messages } = body as {
+    message?: string;
+    messages?: ChatMessage[];
+  };
 
-  if (!message || typeof message !== "string") {
+  // 兼容两种调用：旧版只传 message，新版传完整历史 messages
+  const history: ChatMessage[] = Array.isArray(messages)
+    ? messages.filter(
+        (m) => m && (m.role === "user" || m.role === "assistant") && typeof m.content === "string"
+      )
+    : [];
+
+  const lastMessage = message?.trim() || history.pop()?.content?.trim() || "";
+  if (!lastMessage) {
     return new Response(JSON.stringify({ error: "message 字段必填" }), {
       status: 400,
       headers: { "Content-Type": "application/json" },
@@ -23,6 +38,12 @@ export async function POST(request: NextRequest) {
 
   const systemPrompt = buildTeachingPrompt("beginner");
 
+  const apiMessages: ChatMessage[] = [
+    { role: "system", content: systemPrompt },
+    ...history.slice(-MAX_HISTORY),
+    { role: "user", content: lastMessage },
+  ];
+
   const res = await fetch("https://api.deepseek.com/v1/chat/completions", {
     method: "POST",
     headers: {
@@ -31,10 +52,7 @@ export async function POST(request: NextRequest) {
     },
     body: JSON.stringify({
       model: "deepseek-chat",
-      messages: [
-        { role: "system", content: systemPrompt },
-        { role: "user", content: message },
-      ],
+      messages: apiMessages,
       stream: true,
       max_tokens: 2048,
     }),

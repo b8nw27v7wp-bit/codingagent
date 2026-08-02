@@ -102,7 +102,14 @@ export function ChatPanel() {
           "Content-Type": "application/json",
           ...(apiKey ? { "x-api-key": apiKey } : {}),
         },
-        body: JSON.stringify({ message: userMessage }),
+        body: JSON.stringify({
+          message: userMessage,
+          // 带上对话历史（不含刚追加的这条 user 消息），实现多轮记忆
+          messages: messages.slice(0, -1).map((m) => ({
+            role: m.role,
+            content: m.content,
+          })),
+        }),
         signal: controller.signal,
       });
 
