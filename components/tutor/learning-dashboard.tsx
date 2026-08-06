@@ -47,10 +47,14 @@ export function LearningDashboard() {
     setProgress(loadAllProgress());
     setMounted(true);
 
-    // 监听 localStorage 变化（跨标签页同步）
+    // 监听 localStorage 变化（跨标签页同步）+ 同标签页进度更新
     const onStorage = () => setProgress(loadAllProgress());
     window.addEventListener("storage", onStorage);
-    return () => window.removeEventListener("storage", onStorage);
+    window.addEventListener("progress-update", onStorage);
+    return () => {
+      window.removeEventListener("storage", onStorage);
+      window.removeEventListener("progress-update", onStorage);
+    };
   }, []);
 
   if (!mounted) {

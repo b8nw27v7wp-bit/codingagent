@@ -16,6 +16,8 @@ import {
   ChevronLeft,
 } from "lucide-react";
 import type { OnMount } from "@monaco-editor/react";
+import { markExerciseComplete } from "@/lib/progress";
+import { useToast } from "@/components/toast-provider";
 
 const Editor = dynamic(() => import("@monaco-editor/react"), { ssr: false });
 
@@ -58,6 +60,7 @@ export function ExercisePanel({ exercises, courseId, lessonId, language = "pytho
   const [showHints, setShowHints] = useState<number>(0);
   // hydration 保护：SSR 与首次客户端渲染输出一致，挂载后再渲染 Monaco
   const [mounted, setMounted] = useState(false);
+  const { success: toastSuccess } = useToast();
 
   useEffect(() => {
     setMounted(true);
@@ -78,6 +81,10 @@ export function ExercisePanel({ exercises, courseId, lessonId, language = "pytho
       });
       const data = await res.json();
       setResult(data);
+      if (data.allPassed) {
+        markExerciseComplete(exercise.id, courseId);
+        toastSuccess("练习全部通过！进度已记录");
+      }
     } catch (err) {
       setResult({
         exerciseId: exercise.id,

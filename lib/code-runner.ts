@@ -29,9 +29,15 @@ export function getRuntimeLabel(language: CodeLanguage): string {
 export function runCode(code: string, language: CodeLanguage, timeout = 8000): Promise<ExecResult> {
   const { bin, ext } = RUNTIME[language];
   const tmpFile = path.join(os.tmpdir(), `sandbox-${Date.now()}-${Math.random().toString(36).slice(2, 8)}${ext}`);
-  writeFileSync(tmpFile, code, "utf-8");
 
   return new Promise((resolve) => {
+    try {
+      writeFileSync(tmpFile, code, "utf-8");
+    } catch (err) {
+      resolve({ stdout: "", stderr: `无法写入临时文件：${err instanceof Error ? err.message : String(err)}` });
+      return;
+    }
+
     const child = spawn(bin, [tmpFile], {
       timeout,
       cwd: os.tmpdir(),
@@ -72,9 +78,15 @@ export function runCodeWithInput(
 ): Promise<ExecResult> {
   const { bin, ext } = RUNTIME[language];
   const tmpFile = path.join(os.tmpdir(), `sandbox-${Date.now()}-${Math.random().toString(36).slice(2, 8)}${ext}`);
-  writeFileSync(tmpFile, code, "utf-8");
 
   return new Promise((resolve) => {
+    try {
+      writeFileSync(tmpFile, code, "utf-8");
+    } catch (err) {
+      resolve({ stdout: "", stderr: `无法写入临时文件：${err instanceof Error ? err.message : String(err)}` });
+      return;
+    }
+
     const child = spawn(bin, [tmpFile], {
       timeout,
       cwd: os.tmpdir(),

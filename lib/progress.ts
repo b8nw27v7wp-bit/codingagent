@@ -26,6 +26,8 @@ function saveProgress(progress: Record<string, CourseProgress>) {
   if (typeof window === "undefined") return;
   try {
     localStorage.setItem(PROGRESS_KEY, JSON.stringify(progress));
+    // 通知同标签页的监听者（storage 事件只在跨标签页时触发）
+    window.dispatchEvent(new Event("progress-update"));
   } catch {}
 }
 

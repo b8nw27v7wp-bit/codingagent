@@ -86,11 +86,13 @@ export function CodePlayground() {
     setMounted(true);
   }, []);
 
-  // 代码变更时自动保存到 localStorage
+  // 代码变更时防抖保存到 localStorage（300ms）
   useEffect(() => {
-    if (editorMounted) {
+    if (!editorMounted) return;
+    const timer = setTimeout(() => {
       localStorage.setItem(STORAGE_KEY, code);
-    }
+    }, 300);
+    return () => clearTimeout(timer);
   }, [code, editorMounted]);
 
   const runCode = useCallback(async () => {

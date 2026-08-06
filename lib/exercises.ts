@@ -2,7 +2,7 @@
  * 练习题目数据结构 & 加载器
  */
 
-import { readFileSync, existsSync } from "fs";
+import { readFileSync, existsSync, readdirSync } from "fs";
 import path from "path";
 
 const CONTENT_DIR = path.join(process.cwd(), "content");
@@ -32,7 +32,6 @@ export function getExercises(
 
   const prefix = `${courseId}-${lessonId}-`;
   try {
-    const { readdirSync } = require("fs");
     return readdirSync(dir)
       .filter((f: string) => f.startsWith(prefix) && f.endsWith(".json"))
       .map((f: string) => {
@@ -79,7 +78,6 @@ export function getAllExercises(courseId: string): Exercise[] {
   const dir = path.join(CONTENT_DIR, courseId, "exercises");
   if (!existsSync(dir)) return [];
   try {
-    const { readdirSync } = require("fs");
     return readdirSync(dir)
       .filter((f: string) => f.endsWith(".json"))
       .map((f: string) => {

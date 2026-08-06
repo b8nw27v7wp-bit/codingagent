@@ -4,14 +4,11 @@
  * 语言由课程自动推断（python / javascript）
  */
 import { NextRequest, NextResponse } from "next/server";
-import { writeFileSync, unlinkSync } from "fs";
-import path from "path";
-import os from "os";
 import { getExercise } from "@/lib/exercises";
 import { getCourse } from "@/lib/courses";
 import { getDeepSeekApiKey } from "@/lib/api-key";
-import { isCodeSafe, getBlockedPattern, type CodeLanguage } from "@/lib/sandbox-safety";
-import { runCodeWithInput, getRuntimeLabel } from "@/lib/code-runner";
+import { getBlockedPattern, type CodeLanguage } from "@/lib/sandbox-safety";
+import { runCodeWithInput } from "@/lib/code-runner";
 
 export async function POST(req: NextRequest) {
   try {
@@ -85,41 +82,35 @@ interface TestResult {
 }
 
 /** 运行单个测试用例 */
-function runTestCase(
+async function runTestCase(
   code: string,
   input: string,
   expected: string,
   language: CodeLanguage
 ): Promise<TestResult> {
-  return new Promise((resolve) => {
-    const tmpFile = path.join(os.tmpdir(), `test_${Date.now()}_${Math.random().toString(36).slice(2, 8)}${language === "javascript" ? ".js" : ".py"}`);
+  try {
+    const result = await runCodeWithInput(code, input, language, 8000);
 
-    try {
-      writeFileSync(tmpFile, code, "utf-8");
-    } catch {
-      resolve({ passed: false, expected, actual: "", error: "无法写入临时文件" });
-      return;
+    if (result.stderr.trim()) {
+      return {
+        passed: false,
+        expected,
+        actual: result.stdout.trim(),
+        error: result.stderr.trim(),
+      };
     }
 
-    const resultPromise = runCodeWithInput(code, input, language, 8000);
-    resultPromise.then((result) => {
-      try { if (tmpFile) unlinkSync(tmpFile); } catch {}
-
-      if (result.stderr.trim()) {
-        resolve({
-          passed: false,
-          expected,
-          actual: result.stdout.trim(),
-          error: result.stderr.trim(),
-        });
-        return;
-      }
-
-      const actual = result.stdout.trim();
-      const passed = actual === expected.trim();
-      resolve({ passed, expected, actual, error: null });
-    });
-  });
+    const actual = result.stdout.trim();
+    const passed = actual === expected.trim();
+    return { passed, expected, actual, error: null };
+  } catch (err) {
+    return {
+      passed: false,
+      expected,
+      actual: "",
+      error: err instanceof Error ? err.message : "执行失败",
+    };
+  }
 }
 
 /** AI 代码 Review */
