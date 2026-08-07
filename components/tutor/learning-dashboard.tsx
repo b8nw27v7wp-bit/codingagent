@@ -3,7 +3,9 @@
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { BarChart3, BookOpen, CheckCircle, Clock, TrendingUp } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { BarChart3, BookOpen, CheckCircle, Clock, TrendingUp, FileDown } from "lucide-react";
+import { useToast } from "@/components/toast-provider";
 
 interface CourseProgress {
   completedLessons: string[];
@@ -32,6 +34,7 @@ export function LearningDashboard() {
   const [mounted, setMounted] = useState(false);
   const [courses, setCourses] = useState<CourseInfo[]>([]);
   const [progress, setProgress] = useState<Record<string, CourseProgress>>({});
+  const { success: toastSuccess, error: toastError } = useToast();
 
   useEffect(() => {
     // 动态加载课程列表（服务端 manifest 为准）
@@ -104,6 +107,47 @@ export function LearningDashboard() {
     return latest;
   })();
 
+  // 导出学习报告（Markdown 下载，供论文/自评使用）
+  function exportReport() {
+    const lines: string[] = [];
+    lines.push("# AI 编程教学助手 — 学习报告");
+    lines.push("");
+    lines.push(`- 生成时间：${new Date().toLocaleString("zh-CN")}`);
+    lines.push(`- 总体进度：${overallPercent}%`);
+    lines.push(`- 课时完成：${completedLessons} / ${totalLessons}`);
+    lines.push(`- 练习完成：${completedExercises} / ${totalExercises}`);
+    lines.push("");
+    lines.push("## 课程详情");
+    lines.push("");
+    for (const c of courseStats) {
+      const lPct = c.totalLessons > 0 ? Math.round((c.completedLessons / c.totalLessons) * 100) : 0;
+      const ePct = c.totalExercises > 0 ? Math.round((c.completedExercises / c.totalExercises) * 100) : 0;
+      lines.push(`### ${c.title}`);
+      lines.push("");
+      lines.push(`- 课时进度：${c.completedLessons} / ${c.totalLessons}（${lPct}%）`);
+      lines.push(`- 练习进度：${c.completedExercises} / ${c.totalExercises}（${ePct}%）`);
+      lines.push("");
+    }
+    lines.push("---");
+    lines.push("");
+    lines.push("> 由 AI 编程教学助手自动生成");
+
+    try {
+      const blob = new Blob([lines.join("\n")], { type: "text/markdown;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `ai-coding-tutor-学习报告-${new Date().toISOString().slice(0, 10)}.md`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      toastSuccess("学习报告已导出为 Markdown 文件");
+    } catch {
+      toastError("导出失败，请重试");
+    }
+  }
+
   return (
     <div className="space-y-6">
       {/* 总览卡片 */}
@@ -174,10 +218,21 @@ export function LearningDashboard() {
       {/* 进度条 */}
       <Card>
         <CardHeader className="pb-3">
-          <CardTitle className="text-lg flex items-center gap-2">
-            <BarChart3 className="w-5 h-5" />
-            学习进度详情
-          </CardTitle>
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-lg flex items-center gap-2">
+              <BarChart3 className="w-5 h-5" />
+              学习进度详情
+            </CardTitle>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={exportReport}
+              title="导出学习报告（Markdown）"
+            >
+              <FileDown className="w-4 h-4 mr-1" />
+              导出报告
+            </Button>
+          </div>
         </CardHeader>
         <CardContent className="space-y-6">
           {courseStats.map((course) => {

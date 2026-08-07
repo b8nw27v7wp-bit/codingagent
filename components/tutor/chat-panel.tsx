@@ -16,8 +16,33 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Send, Bot, User, Loader2, Trash2, KeyRound } from "lucide-react";
+import { Send, Bot, User, Loader2, Trash2, KeyRound, Mic } from "lucide-react";
 import { useToast } from "@/components/toast-provider";
+
+// Web Speech API 类型声明（TypeScript 标准库暂未收录）
+interface SpeechRecognitionLike {
+  lang: string;
+  continuous: boolean;
+  interimResults: boolean;
+  start(): void;
+  stop(): void;
+  abort(): void;
+  onresult: ((event: {
+    resultIndex: number;
+    results: { length: number; [index: number]: { isFinal: boolean; [index: number]: { transcript: string } } };
+  }) => void) | null;
+  onend: (() => void) | null;
+  onerror: ((event: { error: string }) => void) | null;
+}
+
+function getSpeechRecognition(): (new () => SpeechRecognitionLike) | null {
+  if (typeof window === "undefined") return null;
+  const w = window as unknown as {
+    SpeechRecognition?: new () => SpeechRecognitionLike;
+    webkitSpeechRecognition?: new () => SpeechRecognitionLike;
+  };
+  return w.SpeechRecognition || w.webkitSpeechRecognition || null;
+}
 
 const CHAT_STORAGE_KEY = "ai-tutor-chat-history";
 const API_KEY_STORAGE_KEY = "ai-tutor-api-key";
@@ -57,8 +82,10 @@ export function ChatPanel() {
   });
   const [keyDraft, setKeyDraft] = useState("");
   const [keyDialogOpen, setKeyDialogOpen] = useState(false);
+  const [listening, setListening] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const abortRef = useRef<AbortController | null>(null);
+  const recognitionRef = useRef<SpeechRecognitionLike | null>(null);
   const { error: toastError, success: toastSuccess } = useToast();
 
   // 滚动到底部
@@ -164,6 +191,57 @@ export function ChatPanel() {
 
   function handleStop() {
     abortRef.current?.abort();
+  }
+
+  // 语音输入（Web Speech API，Chrome/Edge 支持）
+  function toggleListening() {
+    if (listening) {
+      recognitionRef.current?.stop();
+      setListening(false);
+      return;
+    }
+
+    const SR = getSpeechRecognition();
+    if (!SR) {
+      toastError("当前浏览器不支持语音输入，请使用 Chrome 或 Edge");
+      return;
+    }
+
+    try {
+      const recognition = new SR();
+      recognition.lang = "zh-CN";
+      recognition.continuous = false;
+      recognition.interimResults = true;
+
+      recognition.onresult = (event) => {
+        let transcript = "";
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+          transcript += event.results[i][0].transcript;
+        }
+        if (transcript) {
+          setInput((prev) => (prev ? prev + transcript : transcript));
+        }
+      };
+      recognition.onend = () => setListening(false);
+      recognition.onerror = (event) => {
+        if (event.error === "not-allowed" || event.error === "service-not-allowed") {
+          toastError("麦克风权限被拒绝，请在浏览器设置中允许访问麦克风");
+        } else if (event.error === "no-speech") {
+          toastError("没有检测到语音，请重试");
+        } else {
+          toastError(`语音识别失败：${event.error}`);
+        }
+        setListening(false);
+      };
+
+      recognitionRef.current = recognition;
+      recognition.start();
+      setListening(true);
+      toastSuccess("正在聆听，请说话...（点击按钮停止）");
+    } catch {
+      toastError("语音识别启动失败，请重试");
+      setListening(false);
+    }
   }
 
   function clearHistory() {
@@ -341,6 +419,16 @@ export function ChatPanel() {
             rows={1}
             disabled={loading}
           />
+          <Button
+            size="icon"
+            variant={listening ? "destructive" : "outline"}
+            onClick={toggleListening}
+            disabled={loading}
+            className={`shrink-0 ${listening ? "animate-pulse" : ""}`}
+            title={listening ? "停止录音" : "语音输入（Chrome/Edge）"}
+          >
+            <Mic className="w-4 h-4" />
+          </Button>
           {loading ? (
             <Button size="icon" variant="destructive" onClick={handleStop} className="shrink-0">
               <span className="text-xs">■</span>
