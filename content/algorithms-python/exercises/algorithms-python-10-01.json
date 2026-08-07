@@ -1,0 +1,21 @@
+{
+  "id": "algorithms-python-10-01",
+  "courseId": "algorithms-python",
+  "lessonId": "10",
+  "title": "去重排序",
+  "description": "输入整数列表，去掉重复数字后从小到大排序，输出结果（空格分隔）。",
+  "testCases": [
+    {
+      "input": "3 1 3 2 1\n",
+      "expected": "1 2 3"
+    },
+    {
+      "input": "5 5 5\n",
+      "expected": "5"
+    }
+  ],
+  "hints": [
+    "sorted(set(nums)) 一步完成",
+    "输出用 ' '.join(map(str, result))"
+  ]
+}

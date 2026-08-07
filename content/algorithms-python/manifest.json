@@ -1,0 +1,69 @@
+{
+  "id": "algorithms-python",
+  "title": "算法入门（Python）",
+  "description": "用 Python 学习基础算法：复杂度、枚举、双指针、贪心、递归、排序、二分、栈队列。适合已掌握 Python 语法、想提升编程思维的学习者。",
+  "level": "intermediate",
+  "language": "python",
+  "lessons": [
+    {
+      "id": "01",
+      "file": "01-what-is-algorithm.mdx",
+      "title": "什么是算法",
+      "duration": "20分钟"
+    },
+    {
+      "id": "02",
+      "file": "02-complexity.mdx",
+      "title": "时间复杂度入门",
+      "duration": "25分钟"
+    },
+    {
+      "id": "03",
+      "file": "03-enumeration.mdx",
+      "title": "枚举与暴力搜索",
+      "duration": "25分钟"
+    },
+    {
+      "id": "04",
+      "file": "04-two-pointers.mdx",
+      "title": "双指针技巧",
+      "duration": "30分钟"
+    },
+    {
+      "id": "05",
+      "file": "05-greedy.mdx",
+      "title": "贪心算法",
+      "duration": "30分钟"
+    },
+    {
+      "id": "06",
+      "file": "06-recursion.mdx",
+      "title": "递归思想",
+      "duration": "30分钟"
+    },
+    {
+      "id": "07",
+      "file": "07-sorting.mdx",
+      "title": "排序算法：冒泡与选择",
+      "duration": "35分钟"
+    },
+    {
+      "id": "08",
+      "file": "08-binary-search.mdx",
+      "title": "二分查找",
+      "duration": "30分钟"
+    },
+    {
+      "id": "09",
+      "file": "09-stack-queue.mdx",
+      "title": "栈与队列",
+      "duration": "30分钟"
+    },
+    {
+      "id": "10",
+      "file": "10-project.mdx",
+      "title": "综合项目：查找与排序工具箱",
+      "duration": "45分钟"
+    }
+  ]
+}

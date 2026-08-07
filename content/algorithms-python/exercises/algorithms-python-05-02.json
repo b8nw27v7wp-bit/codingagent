@@ -1,0 +1,25 @@
+{
+  "id": "algorithms-python-05-02",
+  "courseId": "algorithms-python",
+  "lessonId": "05",
+  "title": "最多装几件",
+  "description": "第一行输入背包容量，第二行输入物品重量列表。每件价值相同，输出最多能装多少件（贪心：先装最轻的）。",
+  "testCases": [
+    {
+      "input": "10\n3 5 2 8 1\n",
+      "expected": "3"
+    },
+    {
+      "input": "20\n4 4 4 4 4 4\n",
+      "expected": "5"
+    },
+    {
+      "input": "5\n6 7 8\n",
+      "expected": "0"
+    }
+  ],
+  "hints": [
+    "重量排序后从小到大装",
+    "容量 10，装 1+2+3=6，再装 5 就超 → 3 件"
+  ]
+}

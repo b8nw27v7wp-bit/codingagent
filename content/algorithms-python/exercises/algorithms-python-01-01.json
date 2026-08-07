@@ -1,0 +1,25 @@
+{
+  "id": "algorithms-python-01-01",
+  "courseId": "algorithms-python",
+  "lessonId": "01",
+  "title": "找最大数",
+  "description": "输入两个整数，输出较大的那个。",
+  "testCases": [
+    {
+      "input": "3 5\n",
+      "expected": "5"
+    },
+    {
+      "input": "9 2\n",
+      "expected": "9"
+    },
+    {
+      "input": "7 7\n",
+      "expected": "7"
+    }
+  ],
+  "hints": [
+    "用 split() 拆分输入，int() 转整数",
+    "比较两个数，用 max() 或 if 判断"
+  ]
+}

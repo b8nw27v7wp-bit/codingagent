@@ -1,0 +1,17 @@
+{
+  "id": "algorithms-python-02-02",
+  "courseId": "algorithms-python",
+  "lessonId": "02",
+  "title": "星号方阵",
+  "description": "用双层循环输出 3 行，每行 3 个星号（共 9 个 *）。",
+  "testCases": [
+    {
+      "input": "",
+      "expected": "***\n***\n***"
+    }
+  ],
+  "hints": [
+    "外层循环管行，内层循环管每行的星号",
+    "print('*' * 3) 或内层循环拼接"
+  ]
+}

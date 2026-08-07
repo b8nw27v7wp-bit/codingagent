@@ -1,0 +1,39 @@
+# AI 编程教学助手 — 一键部署（应用 + MySQL）
+# 用法：docker compose up -d --build   （首次构建约 3-5 分钟）
+# 访问：http://localhost:3000
+services:
+  db:
+    image: mysql:8.4
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:-change-me}
+      MYSQL_DATABASE: ai_tutor
+      MYSQL_CHARSET: utf8mb4
+    volumes:
+      - mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-p${DB_PASSWORD:-change-me}"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  app:
+    build: .
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      AUTH_SECRET: ${AUTH_SECRET:?set AUTH_SECRET in .env first - use openssl rand -hex 32}
+      AUTH_TRUST_HOST: "true"
+      DB_HOST: db
+      DB_PORT: "3306"
+      DB_USER: root
+      DB_PASSWORD: ${DB_PASSWORD:-change-me}
+      DB_NAME: ai_tutor
+      DEEPSEEK_API_KEY: ${DEEPSEEK_API_KEY:-}
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  mysql-data:

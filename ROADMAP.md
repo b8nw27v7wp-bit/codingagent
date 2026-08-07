@@ -1,6 +1,6 @@
 # AI 编程教学助手 — 开发路线图
 
-> 当前版本：v0.3 | 9 条路由 | 53 项测试 | 已推送 GitHub
+> 当前版本：v0.6 | 13 条路由 | 64 项测试 | 3 门课程 | 已推送 GitHub
 
 ---
 
@@ -61,7 +61,9 @@
 
 | 任务 | 预估工时 | 说明 |
 |---|---|---|
-| 部署 Vercel | 1h | 一键部署，需 Python 运行时支持 |
-| 用户系统 | 5h | NextAuth.js 多用户 |
-| 更多课程 | 4h | JS/Web 基础等 |
-| 语音输入 | 2h | Web Speech API |
+| 部署上线 | 1h | ✅ Docker Compose 就绪；Vercel 部署需外部 MySQL（serverless 无沙箱） |
+| 用户系统 | 5h | ✅ v0.6 已交付（NextAuth + MySQL + 进度同步），可扩展 OAuth/找回密码 |
+| 更多课程 | 4h | ✅ 算法入门已交付；可继续做 Java / Web 前端课程 |
+| 语音输入 | 2h | ✅ 已交付（Web Speech API） |
+| 代码分享 | 3h | 生成分享链接（需服务端存储） |
+| 学习报告导出 | 1h | ✅ 已交付（Markdown 下载） |

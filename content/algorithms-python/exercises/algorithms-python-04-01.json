@@ -1,0 +1,21 @@
+{
+  "id": "algorithms-python-04-01",
+  "courseId": "algorithms-python",
+  "lessonId": "04",
+  "title": "两数之和",
+  "description": "第一行输入升序整数列表，第二行输入目标值。判断是否存在两数之和等于目标：存在输出 '有'，否则输出 '没有'。",
+  "testCases": [
+    {
+      "input": "1 2 3 4 6\n7\n",
+      "expected": "有"
+    },
+    {
+      "input": "1 2 3 4 6\n20\n",
+      "expected": "没有"
+    }
+  ],
+  "hints": [
+    "左右指针：和太小左指针右移，太大右指针左移",
+    "nums = list(map(int, input().split()))"
+  ]
+}

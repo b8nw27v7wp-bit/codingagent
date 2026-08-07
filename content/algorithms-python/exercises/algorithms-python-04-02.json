@@ -1,0 +1,25 @@
+{
+  "id": "algorithms-python-04-02",
+  "courseId": "algorithms-python",
+  "lessonId": "04",
+  "title": "回文判断",
+  "description": "输入一个字符串，判断是否回文（正读倒读一样）：是输出 '是回文'，否则输出 '不是回文'。",
+  "testCases": [
+    {
+      "input": "racecar\n",
+      "expected": "是回文"
+    },
+    {
+      "input": "hello\n",
+      "expected": "不是回文"
+    },
+    {
+      "input": "上海自来水来自海上\n",
+      "expected": "是回文"
+    }
+  ],
+  "hints": [
+    "左右指针向中间靠拢，逐一比较",
+    "或直接用 s == s[::-1]"
+  ]
+}

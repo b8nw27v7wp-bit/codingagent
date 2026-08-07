@@ -1,0 +1,101 @@
+---
+lesson: "09"
+title: "栈与队列"
+duration: "30分钟"
+---
+
+## 学习目标
+
+- 🎯 理解栈：后进先出（LIFO）
+- 🎯 理解队列：先进先出（FIFO）
+- 🎯 用 Python 列表模拟栈与队列
+
+---
+
+## 栈（Stack）：后进先出
+
+像一摞盘子：**后放上去的先拿走**。
+
+- 入栈：`push`（放到顶部）
+- 出栈：`pop`（拿走顶部）
+
+Python 用列表模拟：
+
+```python
+stack = []
+stack.append("A")     # push
+stack.append("B")
+stack.append("C")
+print(stack.pop())    # C（后进先出）
+print(stack.pop())    # B
+```
+
+**经典应用**：括号匹配、函数调用栈、撤销操作。
+
+---
+
+## 例：括号匹配
+
+`({[]})` 合法，`([)]` 不合法。用栈：遇左括号入栈，遇右括号弹出并检查是否匹配：
+
+```python
+def check_brackets(s):
+    pairs = {")": "(", "]": "[", "}": "{"}
+    stack = []
+    for ch in s:
+        if ch in "([{":
+            stack.append(ch)          # 左括号入栈
+        elif ch in ")]}":
+            if not stack or stack.pop() != pairs[ch]:
+                return False          # 不匹配
+    return len(stack) == 0            # 栈必须为空
+
+print(check_brackets("({[]})"))   # True
+print(check_brackets("([)]"))     # False
+print(check_brackets("((("))      # False
+```
+
+---
+
+## 队列（Queue）：先进先出
+
+像排队买饭：**先来的先服务**。
+
+- 入队：`append`（排到队尾）
+- 出队：`pop(0)`（队头离开）
+
+```python
+queue = []
+queue.append("A")     # 入队
+queue.append("B")
+queue.append("C")
+print(queue.pop(0))   # A（先进先出）
+print(queue.pop(0))   # B
+```
+
+> ⚠️ `pop(0)` 是 O(n)（要移动后面所有元素），数据量大时可用 `collections.deque`。
+
+---
+
+## 栈 vs 队列
+
+| 结构 | 顺序 | 生活比喻 | 常见场景 |
+|---|---|---|---|
+| 栈 | 后进先出 LIFO | 摞盘子 | 括号匹配、撤销、递归 |
+| 队列 | 先进先出 FIFO | 排队 | 任务调度、消息队列、BFS |
+
+---
+
+## 小练习 🧪
+
+用栈把字符串 `"hello"` 反转：依次入栈再依次出栈，结果是什么？
+
+---
+
+## 关键要点
+
+- 栈：`append` + `pop()`，后进先出
+- 队列：`append` + `pop(0)`，先进先出（大数据用 `deque`）
+- 括号匹配是栈的经典考题
+
+> 💡 **下一课预告**：把学过的算法组合成一个小工具 —— **综合项目**！

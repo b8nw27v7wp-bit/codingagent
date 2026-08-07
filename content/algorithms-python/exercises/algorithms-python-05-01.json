@@ -1,0 +1,25 @@
+{
+  "id": "algorithms-python-05-01",
+  "courseId": "algorithms-python",
+  "lessonId": "05",
+  "title": "最少硬币数",
+  "description": "硬币面值 1/5/10/25，输入金额，输出凑出该金额所需的最少硬币数（贪心：优先用大面值）。",
+  "testCases": [
+    {
+      "input": "36\n",
+      "expected": "3"
+    },
+    {
+      "input": "47\n",
+      "expected": "5"
+    },
+    {
+      "input": "0\n",
+      "expected": "0"
+    }
+  ],
+  "hints": [
+    "coins = [25, 10, 5, 1]，每次 amount//c 张，再取余",
+    "36 = 25+10+1 共 3 枚"
+  ]
+}

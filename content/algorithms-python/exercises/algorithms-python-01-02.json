@@ -1,0 +1,25 @@
+{
+  "id": "algorithms-python-01-02",
+  "courseId": "algorithms-python",
+  "lessonId": "01",
+  "title": "三个数排序",
+  "description": "输入三个整数，按从小到大输出（用空格分隔）。",
+  "testCases": [
+    {
+      "input": "9 1 5\n",
+      "expected": "1 5 9"
+    },
+    {
+      "input": "3 2 1\n",
+      "expected": "1 2 3"
+    },
+    {
+      "input": "4 4 2\n",
+      "expected": "2 4 4"
+    }
+  ],
+  "hints": [
+    "放入列表后调用 sorted()",
+    "用 print(*lst) 或 join 输出"
+  ]
+}

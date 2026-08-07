@@ -1,0 +1,16 @@
+node_modules
+.next
+.git
+.gitignore
+*.md
+.env*
+Dockerfile
+docker-compose.yml
+.dockerignore
+tests
+tsconfig.json
+tsconfig.tsbuildinfo
+next-env.d.ts
+vitest.config.ts
+eslint.config.mjs
+components.json

@@ -1,0 +1,17 @@
+{
+  "id": "algorithms-python-02-01",
+  "courseId": "algorithms-python",
+  "lessonId": "02",
+  "title": "1 到 100 求和",
+  "description": "用循环计算 1+2+...+100 并输出（不要直接打印 5050，要写循环）。",
+  "testCases": [
+    {
+      "input": "",
+      "expected": "5050"
+    }
+  ],
+  "hints": [
+    "for i in range(1, 101): total += i",
+    "这是 O(n) 的写法；也可以试试 O(1) 的公式"
+  ]
+}

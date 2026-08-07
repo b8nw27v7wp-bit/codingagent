@@ -1,0 +1,25 @@
+{
+  "id": "algorithms-python-03-02",
+  "courseId": "algorithms-python",
+  "lessonId": "03",
+  "title": "完美数判断",
+  "description": "输入一个正整数 n，若所有真因子（除自身外）之和等于 n，输出 '是完美数'，否则输出 '不是完美数'。",
+  "testCases": [
+    {
+      "input": "6\n",
+      "expected": "是完美数"
+    },
+    {
+      "input": "28\n",
+      "expected": "是完美数"
+    },
+    {
+      "input": "12\n",
+      "expected": "不是完美数"
+    }
+  ],
+  "hints": [
+    "枚举 range(1, n)，能整除的累加",
+    "6 的真因子 1+2+3=6"
+  ]
+}

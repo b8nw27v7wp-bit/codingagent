@@ -1,0 +1,21 @@
+{
+  "id": "algorithms-python-09-02",
+  "courseId": "algorithms-python",
+  "lessonId": "09",
+  "title": "栈反转输出",
+  "description": "输入一串整数（空格分隔），用栈（列表 append/pop）实现逆序输出。",
+  "testCases": [
+    {
+      "input": "1 2 3 4 5\n",
+      "expected": "5 4 3 2 1"
+    },
+    {
+      "input": "7 8\n",
+      "expected": "8 7"
+    }
+  ],
+  "hints": [
+    "全部 append 入栈，再逐个 pop 收集",
+    "用 ' '.join(map(str, result)) 输出"
+  ]
+}

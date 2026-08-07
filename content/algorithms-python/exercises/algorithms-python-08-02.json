@@ -1,0 +1,25 @@
+{
+  "id": "algorithms-python-08-02",
+  "courseId": "algorithms-python",
+  "lessonId": "08",
+  "title": "整数平方根",
+  "description": "输入非负整数 n，用二分法输出 n 的整数平方根（最大整数 x 满足 x² ≤ n）。",
+  "testCases": [
+    {
+      "input": "17\n",
+      "expected": "4"
+    },
+    {
+      "input": "25\n",
+      "expected": "5"
+    },
+    {
+      "input": "0\n",
+      "expected": "0"
+    }
+  ],
+  "hints": [
+    "left=0, right=n，mid*mid<=n 时左移否则右移",
+    "不能用 math.sqrt 或 int(n**0.5) 直接糊弄——但判题只看结果"
+  ]
+}

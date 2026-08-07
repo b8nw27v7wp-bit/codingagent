@@ -1,6 +1,6 @@
 # AI 编程教学助手 — 开发进度记录
 
-> 更新：2026-08-07 | 版本 v0.5 | 构建 ✅ | 测试 ✅ | 10 条路由 | 64 tests
+> 更新：2026-08-07 | 版本 v0.6 | 构建 ✅ | 测试 ✅ | 13 条路由 | 64 tests
 
 ---
 
@@ -72,22 +72,35 @@
 - [x] `.gitignore` 排除 `.env.local` / `node_modules` / `.next`
 - [x] v0.5 质量修复（8 项 bug 修复 + 代码清理）
 
+### 👤 用户系统（v0.6）
+- [x] NextAuth v5 邮箱密码登录/注册（bcryptjs 哈希，JWT 会话）
+- [x] MySQL 存储用户与进度（`ai_tutor` 库，users / user_progress 表，自动建表）
+- [x] 登录用户进度云端同步（跨设备），游客模式保持 localStorage 不变
+- [x] 登录时自动合并游客本地进度到云端（并集合并，不丢失已完成项）
+- [x] 顶部导航登录入口 / 用户菜单 / 退出（响应式）
+
+### 🚀 部署（v0.6）
+- [x] Dockerfile 多阶段构建（standalone 输出，含 Python3 + Node 沙箱运行时）
+- [x] docker-compose 一键启动（应用 + MySQL 8.4，数据持久化 volume）
+- [x] DEPLOY.md 部署指南 + .env.example 环境变量模板
+- [x] `output: "standalone"` 生产构建
+
 ---
 
 ## 📊 项目数据
 
 | 指标 | 数值 |
 |---|---|
-| 路由数 | 10（2 静态 + 8 动态/API） |
-| 课程 | 2 门（Python + JavaScript），各 10 课时 |
-| 练习题 | 40 道（每课 2 题） |
-| React 组件 | 18+（6 业务 + 11 UI + 1 Toast） |
-| API 端点 | 5 |
+| 路由数 | 13（3 静态 + 10 动态/API） |
+| 课程 | 3 门（Python / JavaScript / 算法入门），各 10 课时 |
+| 练习题 | 60 道（每课 2 题） |
+| React 组件 | 20+（6 业务 + 11 UI + 1 Toast + 2 Auth） |
+| API 端点 | 8 |
 | 测试 | 64 项（5 文件） |
-| TypeScript 文件 | 25+ |
-| MDX 文件 | 20 |
-| JSON 题库 | 40 |
-| 代码规模 | ~4100 行 |
+| TypeScript 文件 | 28+ |
+| MDX 文件 | 30 |
+| JSON 题库 | 60 |
+| 代码规模 | ~5200 行 |
 
 ### 测试覆盖
 

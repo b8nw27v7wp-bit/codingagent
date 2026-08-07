@@ -1,0 +1,25 @@
+{
+  "id": "algorithms-python-10-02",
+  "courseId": "algorithms-python",
+  "lessonId": "10",
+  "title": "第 k 小",
+  "description": "第一行输入整数列表，第二行输入 k。输出去重排序后第 k 小的数字（k 从 1 开始）；越界输出 '越界'。",
+  "testCases": [
+    {
+      "input": "3 1 3 2 1\n2\n",
+      "expected": "2"
+    },
+    {
+      "input": "9 3 7 1 5\n3\n",
+      "expected": "5"
+    },
+    {
+      "input": "1 2\n9\n",
+      "expected": "越界"
+    }
+  ],
+  "hints": [
+    "unique = sorted(set(nums))，第 k 小是 unique[k-1]",
+    "k 越界（<1 或 >len(unique)）输出 '越界'"
+  ]
+}

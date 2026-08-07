@@ -4,6 +4,8 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { ThemeProvider } from "@/components/theme-provider";
 import { ToastProvider } from "@/components/toast-provider";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { AuthProvider } from "@/components/auth/session-provider";
+import { AuthButtons } from "@/components/auth/auth-buttons";
 import { Sparkles } from "lucide-react";
 import Link from "next/link";
 import "./globals.css";
@@ -46,41 +48,44 @@ export default function RootLayout({
         <ThemeProvider>
           <ToastProvider>
             <TooltipProvider>
-              {/* 顶部导航 */}
-              <header className="border-b sticky top-0 bg-background/95 backdrop-blur z-10">
-                <div className="max-w-5xl mx-auto px-3 sm:px-6 h-14 flex items-center justify-between">
-                  <Link
-                    href="/"
-                    className="flex items-center gap-2 hover:opacity-80 transition-opacity"
-                    aria-label="AI 编程教学助手 首页"
-                  >
-                    <Sparkles className="w-5 h-5 text-yellow-500 shrink-0" />
-                    <span className="font-semibold text-sm sm:text-base whitespace-nowrap">
-                      AI 编程教学助手
-                    </span>
-                  </Link>
-
-                  <nav className="flex items-center gap-1" aria-label="主导航">
+              <AuthProvider>
+                {/* 顶部导航 */}
+                <header className="border-b sticky top-0 bg-background/95 backdrop-blur z-10">
+                  <div className="max-w-5xl mx-auto px-3 sm:px-6 h-14 flex items-center justify-between">
                     <Link
-                      href="/courses"
-                      className="text-xs sm:text-sm text-muted-foreground hover:text-foreground px-2 py-1 rounded-md transition-colors"
+                      href="/"
+                      className="flex items-center gap-2 hover:opacity-80 transition-opacity"
+                      aria-label="AI 编程教学助手 首页"
                     >
-                      课程
+                      <Sparkles className="w-5 h-5 text-yellow-500 shrink-0" />
+                      <span className="font-semibold text-sm sm:text-base whitespace-nowrap">
+                        AI 编程教学助手
+                      </span>
                     </Link>
-                    <ThemeToggle />
-                  </nav>
-                </div>
-              </header>
 
-              {/* 主内容 */}
-              <main id="main-content" tabIndex={-1} className="flex-1 flex flex-col">
-                {children}
-              </main>
+                    <nav className="flex items-center gap-1" aria-label="主导航">
+                      <Link
+                        href="/courses"
+                        className="text-xs sm:text-sm text-muted-foreground hover:text-foreground px-2 py-1 rounded-md transition-colors"
+                      >
+                        课程
+                      </Link>
+                      <AuthButtons />
+                      <ThemeToggle />
+                    </nav>
+                  </div>
+                </header>
 
-              {/* 底部 */}
-              <footer className="border-t py-3 text-center text-xs text-muted-foreground">
-                <p>AI 编程教学助手 © 2026</p>
-              </footer>
+                {/* 主内容 */}
+                <main id="main-content" tabIndex={-1} className="flex-1 flex flex-col">
+                  {children}
+                </main>
+
+                {/* 底部 */}
+                <footer className="border-t py-3 text-center text-xs text-muted-foreground">
+                  <p>AI 编程教学助手 © 2026</p>
+                </footer>
+              </AuthProvider>
             </TooltipProvider>
           </ToastProvider>
         </ThemeProvider>

@@ -1,0 +1,29 @@
+{
+  "id": "algorithms-python-09-01",
+  "courseId": "algorithms-python",
+  "lessonId": "09",
+  "title": "括号匹配",
+  "description": "输入一串括号（只含 ()[]{}），判断是否匹配：匹配输出 '匹配'，否则输出 '不匹配'。",
+  "testCases": [
+    {
+      "input": "({[]})\n",
+      "expected": "匹配"
+    },
+    {
+      "input": "([)]\n",
+      "expected": "不匹配"
+    },
+    {
+      "input": "(((\n",
+      "expected": "不匹配"
+    },
+    {
+      "input": "\n",
+      "expected": "匹配"
+    }
+  ],
+  "hints": [
+    "左括号入栈，右括号弹出比对",
+    "遍历完栈必须为空才匹配"
+  ]
+}

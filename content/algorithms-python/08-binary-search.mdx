@@ -1,0 +1,93 @@
+---
+lesson: "08"
+title: "二分查找"
+duration: "30分钟"
+---
+
+## 学习目标
+
+- 🎯 理解二分查找原理：每次砍掉一半
+- 🎯 能在有序数组中实现二分查找
+- 🎯 认识 O(log n) 的威力
+
+---
+
+## 猜数字游戏
+
+想一个 1~100 的数，怎么最快猜中？**每次猜中间**，对方说"大了/小了"就排除一半 —— 最多 7 次猜中（100 → 50 → 25 → ...）。
+
+这就是**二分查找**：每步把搜索范围砍半。
+
+---
+
+## 实现
+
+在**有序**数组中查找目标值的下标：
+
+```python
+def binary_search(nums, target):
+    left, right = 0, len(nums) - 1
+    while left <= right:
+        mid = (left + right) // 2     # 中间位置
+        if nums[mid] == target:
+            return mid                # 找到了
+        elif nums[mid] < target:
+            left = mid + 1            # 目标在右半部分
+        else:
+            right = mid - 1           # 目标在左半部分
+    return -1                         # 没找到
+
+print(binary_search([1, 3, 5, 7, 9], 5))    # 2
+print(binary_search([1, 3, 5, 7, 9], 4))    # -1
+```
+
+**核心**：因为数组有序，中间值比目标小 → 目标只可能在右半；反之在左半。每次都排除一半。
+
+---
+
+## O(log n) 有多快
+
+| 数据量 n | 线性查找 O(n) | 二分 O(log n) |
+|---|---|---|
+| 1000 | 最多 1000 次 | 最多 10 次 |
+| 1,000,000 | 100 万次 | 最多 20 次 |
+| 10 亿 | 10 亿次 | 最多 30 次 |
+
+数据翻一倍，二分只多 1 次！这就是对数时间的力量。
+
+---
+
+## 变形：求平方根整数部分
+
+用二分求 `sqrt(n)` 的整数部分（不用 `math.sqrt`）：
+
+```python
+def int_sqrt(n):
+    left, right = 0, n
+    while left <= right:
+        mid = (left + right) // 2
+        if mid * mid <= n:
+            left = mid + 1          # 还能更大
+        else:
+            right = mid - 1
+    return right                     # 最后一个平方 ≤ n 的数
+
+print(int_sqrt(17))   # 4（4²=16 ≤ 17 < 5²=25）
+print(int_sqrt(25))   # 5
+```
+
+---
+
+## 小练习 🧪
+
+在 `[1, 3, 5, 7, 9]` 里查找 7，写出每次 `mid` 的变化过程（共几次比较？）。
+
+---
+
+## 关键要点
+
+- 二分前提：**数据有序**
+- 每次排除一半 → O(log n)
+- 模板：`while left <= right` + 根据 `nums[mid]` 收窄区间
+
+> 💡 **下一课预告**：先进后出、先来先服务 —— **栈与队列**。

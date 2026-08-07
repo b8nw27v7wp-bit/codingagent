@@ -1,0 +1,25 @@
+{
+  "id": "algorithms-python-06-01",
+  "courseId": "algorithms-python",
+  "lessonId": "06",
+  "title": "递归阶乘",
+  "description": "输入 n（1≤n≤10），用递归函数计算 n! 并输出。",
+  "testCases": [
+    {
+      "input": "5\n",
+      "expected": "120"
+    },
+    {
+      "input": "1\n",
+      "expected": "1"
+    },
+    {
+      "input": "10\n",
+      "expected": "3628800"
+    }
+  ],
+  "hints": [
+    "def factorial(n): 基准 n<=1 返回 1，否则 n*factorial(n-1)",
+    "必须用递归，不能用 math.factorial"
+  ]
+}

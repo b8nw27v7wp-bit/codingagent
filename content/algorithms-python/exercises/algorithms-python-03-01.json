@@ -1,0 +1,29 @@
+{
+  "id": "algorithms-python-03-01",
+  "courseId": "algorithms-python",
+  "lessonId": "03",
+  "title": "判断质数",
+  "description": "输入一个正整数 n，判断是否为质数：是输出 '是质数'，否则输出 '不是质数'。",
+  "testCases": [
+    {
+      "input": "17\n",
+      "expected": "是质数"
+    },
+    {
+      "input": "15\n",
+      "expected": "不是质数"
+    },
+    {
+      "input": "2\n",
+      "expected": "是质数"
+    },
+    {
+      "input": "1\n",
+      "expected": "不是质数"
+    }
+  ],
+  "hints": [
+    "n<2 直接不是质数",
+    "枚举 range(2, int(n**0.5)+1)，有能整除的就不是质数"
+  ]
+}
