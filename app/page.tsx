@@ -20,7 +20,7 @@ export default function Home() {
           AI 编程教学助手
         </h1>
         <p className="text-muted-foreground text-sm sm:text-lg">
-          基于大语言模型的智能编程辅导系统，帮助零基础初学者开启编程之旅
+          基于大语言模型的智能编程辅导系统，支持 Python 和 JavaScript 双语言学习
         </p>
       </div>
 

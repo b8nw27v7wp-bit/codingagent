@@ -17,12 +17,13 @@
 ### 🎯 核心特色
 
 - 🤖 **AI 对话辅导** — 苏格拉底式提问，5 级渐进提示策略
-- 📚 **结构化课程** — 10 课时 Python 基础，配合生活比喻
-- 💻 **在线练习环境** — Monaco Editor (VS Code 内核) + Python 沙箱
+- 📚 **结构化课程** — Python + JavaScript 双语言课程，各 10 课时
+- 💻 **在线练习环境** — Monaco Editor (VS Code 内核) + 多语言沙箱
 - 🧪 **代码自动评测** — 测试用例验证 + AI Review 反馈
-- 📊 **学习数据看板** — 进度可视化，统计追踪
+- 📊 **学习数据看板** — 进度可视化，实时统计追踪
 - 🌓 **暗色模式** — 跟随系统 / 手动切换
 - ⚡ **流式输出** — AI 回答打字机效果，1.3s 首字响应
+- 🔒 **BYOK 安全模式** — 客户自带 API Key，费用自担
 
 ---
 
@@ -57,6 +58,7 @@
 
 - Node.js ≥ 18
 - Python ≥ 3.8（代码沙箱执行）
+- Node.js（JavaScript 代码沙箱执行）
 - DeepSeek API Key（可选，[获取地址](https://platform.deepseek.com/)）
 
 ### 安装运行
@@ -70,7 +72,7 @@ cd ai-coding-tutor
 npm install
 
 # 3.（可选）配置服务端兜底 API Key
-echo "DEEPSEEK_API_KEY=«redacted:sk-…»" > .env.local
+echo "DEEPSEEK_API_KEY=sk-xxx" > .env.local
 
 # 4. 启动开发服务器
 npm run dev
@@ -102,14 +104,14 @@ npm start
 ```
 ai-coding-tutor/
 ├── app/                          # Next.js App Router
-│   ├── layout.tsx                # 根布局（Theme + Tooltip）
+│   ├── layout.tsx                # 根布局（Theme + Toast + Tooltip）
 │   ├── page.tsx                  # 首页（4 标签页）
 │   ├── api/
 │   │   ├── ai/
 │   │   │   ├── chat/route.ts     # 非流式 AI 对话
 │   │   │   └── chat/stream/route.ts  # 流式 AI (SSE)
 │   │   └── code/
-│   │       ├── run/route.ts      # Python 沙箱执行
+│   │       ├── run/route.ts      # 多语言代码沙箱执行
 │   │       └── evaluate/route.ts # 代码评测 + AI Review
 │   └── courses/
 │       ├── page.tsx              # 课程列表页
@@ -117,9 +119,10 @@ ai-coding-tutor/
 │           ├── page.tsx          # 课程目录（含进度）
 │           └── [lessonId]/page.tsx  # 课时内容 + 练习
 ├── components/
-│   ├── ui/                       # shadcn/ui 组件库
+│   ├── ui/                       # shadcn/ui 组件库 (11 个)
 │   ├── theme-provider.tsx        # 暗色模式 Provider
 │   ├── theme-toggle.tsx          # 主题切换按钮
+│   ├── toast-provider.tsx        # Toast 通知系统
 │   └── tutor/
 │       ├── chat-panel.tsx        # AI 对话面板（流式+持久化）
 │       ├── code-playground.tsx   # Monaco Editor 练习环境
@@ -127,10 +130,12 @@ ai-coding-tutor/
 │       ├── learning-dashboard.tsx # 学习数据看板
 │       └── lesson-*.tsx          # 进度追踪组件
 ├── lib/
-│   ├── api-key.ts                # BYOK Key 管理（请求头优先，服务端兜底）
+│   ├── api-key.ts                # BYOK Key 管理
+│   ├── code-runner.ts            # 多语言代码执行器
 │   ├── courses.ts                # 课程加载 + MDX→HTML
 │   ├── exercises.ts              # 练习题加载器
 │   ├── progress.ts               # 学习进度管理
+│   ├── sandbox-safety.ts         # 多语言安全过滤
 │   ├── llm/                      # LLM Provider 抽象层
 │   │   ├── provider.ts           # 接口定义
 │   │   ├── deepseek.ts           # DeepSeek 直连
@@ -138,14 +143,18 @@ ai-coding-tutor/
 │   └── prompts/
 │       └── tutor.ts              # 教学 Prompt 模板
 ├── content/
-│   └── python-basics/            # Python 基础课程
+│   ├── python-basics/            # Python 基础课程
+│   │   ├── manifest.json         # 课程元信息
+│   │   ├── 01-*.mdx ~ 10-*.mdx   # 10 节 MDX 课时
+│   │   └── exercises/            # 20 道练习题 (JSON)
+│   └── javascript-basics/        # JavaScript 基础课程
 │       ├── manifest.json         # 课程元信息
 │       ├── 01-*.mdx ~ 10-*.mdx   # 10 节 MDX 课时
 │       └── exercises/            # 20 道练习题 (JSON)
-├── docs/                         # 项目文档
+├── tests/                        # 单元测试 (64 项)
 ├── PROGRESS.md                   # 开发进度记录
 ├── ROADMAP.md                    # 后续路线图
-└── IDEA.md                       # 项目原始构想
+└── README.md                     # 项目说明
 ```
 
 ---
@@ -156,22 +165,28 @@ ai-coding-tutor/
 |---|---|---|---|
 | `/api/ai/chat` | POST | 非流式 AI 对话 | ~1.3s |
 | `/api/ai/chat/stream` | POST | 流式 AI 对话 (SSE) | ~1.3s 首字 |
-| `/api/code/run` | POST | Python 代码执行 | ~0.5s |
+| `/api/code/run` | POST | 多语言代码执行 | ~0.5s |
 | `/api/code/evaluate` | POST | 代码评测 + AI Review | ~1.5s |
+| `/api/courses` | GET | 课程列表 | ~50ms |
 
 ### 请求示例
 
 ```bash
-# AI 对话（客户端自带 Key，通过 x-api-key 请求头传入）
+# AI 对话（客户端自带 Key）
 curl -X POST http://localhost:3000/api/ai/chat/stream \
   -H "Content-Type: application/json" \
-  -H "x-api-key: sk-你的DeepSeekKey" \
+  -H "x-api-key: sk-xxx" \
   -d '{"message": "什么是变量？"}'
 
-# AI 对话（不传 x-api-key 时回退服务端 .env.local 配置）
-curl -X POST http://localhost:3000/api/ai/chat/stream \
+# 代码执行（Python）
+curl -X POST http://localhost:3000/api/code/run \
   -H "Content-Type: application/json" \
-  -d '{"message": "什么是变量？"}'
+  -d '{"code": "print(\"Hello!\")", "language": "python"}'
+
+# 代码执行（JavaScript）
+curl -X POST http://localhost:3000/api/code/run \
+  -H "Content-Type: application/json" \
+  -d '{"code": "console.log(\"Hello!\")", "language": "javascript"}'
 
 # 代码评测
 curl -X POST http://localhost:3000/api/code/evaluate \
@@ -182,6 +197,8 @@ curl -X POST http://localhost:3000/api/code/evaluate \
 ---
 
 ## 📊 课程内容
+
+### Python 基础语法
 
 | # | 课时 | 时长 | 练习题 |
 |---|---|---|---|
@@ -196,7 +213,22 @@ curl -X POST http://localhost:3000/api/code/evaluate \
 | 09 | 字典 | 25min | 2 题 |
 | 10 | 综合项目 | 45min | 2 题 |
 
-**总计：10 课时，20 道编程练习题**
+### JavaScript 基础语法
+
+| # | 课时 | 时长 | 练习题 |
+|---|---|---|---|
+| 01 | 认识 JavaScript | 15min | 2 题 |
+| 02 | 变量与常量 | 20min | 2 题 |
+| 03 | 数据类型 | 25min | 2 题 |
+| 04 | 输入与输出 | 20min | 2 题 |
+| 05 | 条件判断 | 25min | 2 题 |
+| 06 | 循环结构 | 30min | 2 题 |
+| 07 | 数组 | 25min | 2 题 |
+| 08 | 函数 | 30min | 2 题 |
+| 09 | 对象 | 25min | 2 题 |
+| 10 | 综合项目 | 45min | 2 题 |
+
+**总计：2 门课程，20 课时，40 道编程练习题**
 
 ---
 
@@ -210,9 +242,26 @@ curl -X POST http://localhost:3000/api/code/evaluate \
 | 编辑器 | Monaco Editor (@monaco-editor/react) |
 | AI | DeepSeek Chat API (OpenAI 兼容) |
 | 主题 | next-themes (暗色模式) |
-| 沙箱 | Python 子进程 (cross-spawn) |
+| 沙箱 | Python / Node.js 子进程 (cross-spawn) |
 | 图标 | Lucide React |
+| 测试 | Vitest (64 项) |
 | 包管理 | npm |
+
+---
+
+## 🧪 测试覆盖
+
+| 模块 | 测试数 | 覆盖范围 |
+|---|---|---|
+| `lib/courses.ts` | 21 | Markdown 渲染、HTML 转义、课程加载 |
+| `lib/exercises.ts` | 10 | 题库加载、字段完整性 |
+| `lib/sandbox-safety.ts` | 25 | Python/JS 安全过滤白名单/黑名单 |
+| `lib/prompts/tutor.ts` | 8 | Prompt 结构、教学策略 |
+
+```bash
+npm test        # 运行全部测试
+npm run build   # 生产构建验证
+```
 
 ---
 
@@ -225,14 +274,13 @@ curl -X POST http://localhost:3000/api/code/evaluate \
 3. 部署即可（客户端自带 Key，**无需**配置服务端 `DEEPSEEK_API_KEY`）
 4. 如需服务端兜底，配置环境变量 `DEEPSEEK_API_KEY`
 
-> ⚠️ 注意：Vercel 环境可能没有 Python 运行时，代码执行功能需额外的 Python 环境支持。
+> ⚠️ 注意：Vercel 环境可能没有 Python/Node.js 运行时，代码执行功能需额外环境支持。
 
 ### Docker
 
 ```bash
 docker build -t ai-coding-tutor .
 docker run -p 3000:3000 ai-coding-tutor
-# 客户端自带 Key；如需服务端兜底：-e DEEPSEEK_API_KEY=sk-xxx
 ```
 
 ---
@@ -240,9 +288,23 @@ docker run -p 3000:3000 ai-coding-tutor
 ## 🔒 安全措施
 
 - ✅ API Key 不提交到仓库（`.env.local` 已被 gitignore）
-- ✅ BYOK 模式：客户 Key 仅存浏览器 localStorage，经 `x-api-key` 请求头传输，不落服务器
-- ✅ 客户 Key 优先于服务端配置；错误响应由 DeepSeek 自动打码，不泄露完整 Key
-- ✅ 代码沙箱拦截 `import os`/`subprocess`/`eval`/`exec`
+- ✅ BYOK 模式：客户 Key 仅存浏览器 localStorage，经 `x-api-key` 请求头传输
+- ✅ 代码沙箱拦截 `import os`/`subprocess`/`eval`/`exec`/`require`/`process`
 - ✅ 10 秒超时防止死循环
 - ✅ 输入长度限制（50KB）
-- ✅ `cross-spawn` 替代 `child_process.exec`
+- ✅ 安全响应头（X-Frame-Options / nosniff / Referrer / XSS Protection）
+- ✅ `cross-spawn` 替代 `child_process.exec`（Windows 兼容）
+
+---
+
+## 📝 开发日志
+
+- **v0.3** — 核心功能完整交付（AI 对话、课程、练习、评测、看板）
+- **v0.4** — 新增 JavaScript 课程，多语言运行与评测
+- **v0.5** — Bug 修复与代码质量提升（8 项修复，64 测试全通过）
+
+---
+
+## 📄 License
+
+MIT
