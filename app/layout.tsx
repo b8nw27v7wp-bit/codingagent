@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import pkg from "../package.json";
 import { Geist, Geist_Mono } from "next/font/google";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ThemeProvider } from "@/components/theme-provider";
@@ -83,7 +84,9 @@ export default function RootLayout({
 
                 {/* 底部 */}
                 <footer className="border-t py-3 text-center text-xs text-muted-foreground">
-                  <p>AI 编程教学助手 © 2026</p>
+                  <p>
+                    AI 编程教学助手 © 2026 · v{pkg.version}
+                  </p>
                 </footer>
               </AuthProvider>
             </TooltipProvider>

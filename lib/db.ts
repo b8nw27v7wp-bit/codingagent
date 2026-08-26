@@ -99,4 +99,22 @@ export async function saveUserProgress(
   }
 }
 
+/**
+ * 健康检查用数据库连通性探测：执行 SELECT 1，带超时兜底。
+ * 只返回布尔结果，不向外泄露任何连接细节；异常一律视为不可用。
+ */
+export async function checkDbConnection(timeoutMs = 2000): Promise<boolean> {
+  try {
+    await Promise.race([
+      pool.query("SELECT 1"),
+      new Promise((_, reject) =>
+        setTimeout(() => reject(new Error("健康检查超时")), timeoutMs)
+      ),
+    ]);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 export default pool;

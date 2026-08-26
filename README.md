@@ -168,6 +168,7 @@ ai-coding-tutor/
 | `/api/code/run` | POST | 多语言代码执行 | ~0.5s |
 | `/api/code/evaluate` | POST | 代码评测 + AI Review | ~1.5s |
 | `/api/courses` | GET | 课程列表 | ~50ms |
+| `/api/health` | GET | 健康检查（状态/数据库连通性/运行时长） | ~5ms |
 
 ### 请求示例
 

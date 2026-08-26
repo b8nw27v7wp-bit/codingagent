@@ -1,6 +1,6 @@
 # AI 编程教学助手 — 开发进度记录
 
-> 更新：2026-08-07 | 版本 v0.6 | 构建 ✅ | 测试 ✅ | 13 条路由 | 64 tests
+> 更新：2026-08-26 | 版本 v0.6.1 | 构建 ✅ | 测试 ✅ | 14 条路由 | 70 tests
 
 ---
 
@@ -91,12 +91,12 @@
 
 | 指标 | 数值 |
 |---|---|
-| 路由数 | 13（3 静态 + 10 动态/API） |
+| 路由数 | 14（3 静态 + 11 动态/API） |
 | 课程 | 3 门（Python / JavaScript / 算法入门），各 10 课时 |
 | 练习题 | 60 道（每课 2 题） |
 | React 组件 | 20+（6 业务 + 11 UI + 1 Toast + 2 Auth） |
-| API 端点 | 8 |
-| 测试 | 64 项（5 文件） |
+| API 端点 | 9 |
+| 测试 | 70 项（7 文件） |
 | TypeScript 文件 | 28+ |
 | MDX 文件 | 30 |
 | JSON 题库 | 60 |
@@ -110,6 +110,7 @@
 | `lib/exercises.ts` | 10 | 题库加载、字段完整性 |
 | `lib/sandbox-safety.ts` | 25 | Python/JS 安全过滤白名单/黑名单 |
 | `lib/prompts/tutor.ts` | 8 | Prompt 结构、教学策略 |
+| `lib/db.ts` 健康探测 + `/api/health` 路由 | 6 | DB 连通性（正常/异常/超时）、端点 200 与 DB 异常分支 |
 
 ### API 性能
 
@@ -120,6 +121,7 @@
 | `/api/code/run` | ~0.5s |
 | `/api/code/evaluate` | ~1.5s（含 AI Review） |
 | `/api/courses` | ~50ms |
+| `/api/health` | ~5ms |
 
 ---
 
