@@ -1,6 +1,6 @@
 # AI 编程教学助手 — 开发进度记录
 
-> 更新：2026-08-26 | 版本 v0.6.1 | 构建 ✅ | 测试 ✅ | 14 条路由 | 70 tests
+> 更新：2026-09-19 | 版本 v0.6.2 | 构建 ✅ | 测试 ✅ | Lint ✅ | 14 条路由 | 77 tests
 
 ---
 
@@ -60,7 +60,8 @@
 - [x] `exercises.test.ts` — 10 项（题库加载、字段完整性）
 - [x] `sandbox-safety.test.ts` — 25 项（Python/JS 安全过滤）
 - [x] `prompts.test.ts` — 8 项（教学 Prompt 结构）
-- [x] **64/64 全部通过**
+- [x] `progress-hook.test.tsx` — 7 项（进度订阅：事件刷新 / 跨标签页 storage / 损坏数据降级 / 完成指示器）
+- [x] **77/77 全部通过（8 个测试文件）**
 
 ### 🔧 工程质量
 - [x] TypeScript 严格模式
@@ -71,6 +72,7 @@
 - [x] 统一 `getDeepSeekApiKey`（消除重复实现）
 - [x] `.gitignore` 排除 `.env.local` / `node_modules` / `.next`
 - [x] v0.5 质量修复（8 项 bug 修复 + 代码清理）
+- [x] v0.6.2 质量修复：`eslint` 25 项问题清零（7 error + 18 warning）；进度读取改用 `useSyncExternalStore`（`lib/progress.ts` + 新增 `lib/use-mounted.ts`），消除 effect 内同步 `setState` 的 React Compiler 违规与级联渲染
 
 ### 👤 用户系统（v0.6）
 - [x] NextAuth v5 邮箱密码登录/注册（bcryptjs 哈希，JWT 会话）
@@ -96,7 +98,7 @@
 | 练习题 | 60 道（每课 2 题） |
 | React 组件 | 20+（6 业务 + 11 UI + 1 Toast + 2 Auth） |
 | API 端点 | 9 |
-| 测试 | 70 项（7 文件） |
+| 测试 | 77 项（8 文件） |
 | TypeScript 文件 | 28+ |
 | MDX 文件 | 30 |
 | JSON 题库 | 60 |

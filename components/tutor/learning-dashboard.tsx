@@ -6,12 +6,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { BarChart3, BookOpen, CheckCircle, Clock, TrendingUp, FileDown } from "lucide-react";
 import { useToast } from "@/components/toast-provider";
-
-interface CourseProgress {
-  completedLessons: string[];
-  completedExercises: string[];
-  lastActiveAt: number;
-}
+import { useLearningProgress } from "@/lib/progress";
+import { useMounted } from "@/lib/use-mounted";
 
 interface CourseInfo {
   id: string;
@@ -20,20 +16,11 @@ interface CourseInfo {
   totalExercises: number;
 }
 
-function loadAllProgress(): Record<string, CourseProgress> {
-  if (typeof window === "undefined") return {};
-  try {
-    const raw = localStorage.getItem("ai-tutor-learning-progress");
-    return raw ? JSON.parse(raw) : {};
-  } catch {
-    return {};
-  }
-}
-
 export function LearningDashboard() {
-  const [mounted, setMounted] = useState(false);
+  const mounted = useMounted();
   const [courses, setCourses] = useState<CourseInfo[]>([]);
-  const [progress, setProgress] = useState<Record<string, CourseProgress>>({});
+  // 进度直接订阅 localStorage（跨标签页 storage + 同标签页 progress-update 自动刷新）
+  const { progress } = useLearningProgress();
   const { success: toastSuccess, error: toastError } = useToast();
 
   useEffect(() => {
@@ -46,18 +33,6 @@ export function LearningDashboard() {
         }
       })
       .catch(() => {});
-
-    setProgress(loadAllProgress());
-    setMounted(true);
-
-    // 监听 localStorage 变化（跨标签页同步）+ 同标签页进度更新
-    const onStorage = () => setProgress(loadAllProgress());
-    window.addEventListener("storage", onStorage);
-    window.addEventListener("progress-update", onStorage);
-    return () => {
-      window.removeEventListener("storage", onStorage);
-      window.removeEventListener("progress-update", onStorage);
-    };
   }, []);
 
   if (!mounted) {
@@ -76,36 +51,29 @@ export function LearningDashboard() {
     );
   }
 
-  let totalLessons = 0;
-  let completedLessons = 0;
-  let totalExercises = 0;
-  let completedExercises = 0;
-
   const courseStats = courses.map((course) => {
     const p = progress[course.id];
-    const cl = p?.completedLessons.length || 0;
-    const ce = p?.completedExercises.length || 0;
-    totalLessons += course.totalLessons;
-    completedLessons += cl;
-    totalExercises += course.totalExercises;
-    completedExercises += ce;
-    return { ...course, completedLessons: cl, completedExercises: ce };
+    return {
+      ...course,
+      completedLessons: p?.completedLessons.length || 0,
+      completedExercises: p?.completedExercises.length || 0,
+    };
   });
 
-  const lessonPercent = totalLessons > 0 ? Math.round((completedLessons / totalLessons) * 100) : 0;
-  const exercisePercent = totalExercises > 0 ? Math.round((completedExercises / totalExercises) * 100) : 0;
+  const totalLessons = courseStats.reduce((sum, c) => sum + c.totalLessons, 0);
+  const completedLessons = courseStats.reduce((sum, c) => sum + c.completedLessons, 0);
+  const totalExercises = courseStats.reduce((sum, c) => sum + c.totalExercises, 0);
+  const completedExercises = courseStats.reduce((sum, c) => sum + c.completedExercises, 0);
+
   const overallPercent = (totalLessons + totalExercises) > 0
     ? Math.round(((completedLessons + completedExercises) / (totalLessons + totalExercises)) * 100)
     : 0;
 
   // 最近活跃
-  const lastActive = (() => {
-    let latest = 0;
-    for (const cp of Object.values(progress)) {
-      if (cp.lastActiveAt > latest) latest = cp.lastActiveAt;
-    }
-    return latest;
-  })();
+  const lastActive = Object.values(progress).reduce(
+    (latest, cp) => Math.max(latest, cp.lastActiveAt || 0),
+    0
+  );
 
   // 导出学习报告（Markdown 下载，供论文/自评使用）
   function exportReport() {

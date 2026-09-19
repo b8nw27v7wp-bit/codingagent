@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useSyncExternalStore } from "react";
 
 const PROGRESS_KEY = "ai-tutor-learning-progress";
 
@@ -143,16 +143,72 @@ export function getCourseProgress(courseId: string): CourseProgress | null {
   return all[courseId] || null;
 }
 
-/** React Hook: 响应式学习进度 */
-export function useLearningProgress() {
-  const [progress, setProgress] = useState<Record<string, CourseProgress>>({});
+/* ---------------- 订阅式读取（useSyncExternalStore） ---------------- */
 
-  useEffect(() => {
-    setProgress(loadProgress());
-  }, []);
+const EMPTY_PROGRESS: Record<string, CourseProgress> = {};
+
+/** getSnapshot 缓存：localStorage 原文不变时必须返回同一个对象引用，否则会无限重渲染 */
+let snapshotRaw: string | null = null;
+let snapshotValue: Record<string, CourseProgress> = EMPTY_PROGRESS;
+
+function readRaw(): string | null {
+  if (typeof window === "undefined") return null;
+  try {
+    return localStorage.getItem(PROGRESS_KEY);
+  } catch {
+    return null;
+  }
+}
+
+function parseProgress(raw: string | null): Record<string, CourseProgress> {
+  if (!raw) return EMPTY_PROGRESS;
+  try {
+    return JSON.parse(raw) as Record<string, CourseProgress>;
+  } catch {
+    return EMPTY_PROGRESS;
+  }
+}
+
+function getProgressSnapshot(): Record<string, CourseProgress> {
+  const raw = readRaw();
+  if (raw !== snapshotRaw) {
+    snapshotRaw = raw;
+    snapshotValue = parseProgress(raw);
+  }
+  return snapshotValue;
+}
+
+/** SSR / 水合首帧固定返回空进度，保证服务端与客户端首帧输出一致 */
+function getServerProgressSnapshot(): Record<string, CourseProgress> {
+  return EMPTY_PROGRESS;
+}
+
+/** 订阅进度变化：同标签页 progress-update + 跨标签页 storage */
+function subscribeProgress(onStoreChange: () => void) {
+  window.addEventListener("progress-update", onStoreChange);
+  window.addEventListener("storage", onStoreChange);
+  return () => {
+    window.removeEventListener("progress-update", onStoreChange);
+    window.removeEventListener("storage", onStoreChange);
+  };
+}
+
+/**
+ * React Hook: 响应式学习进度。
+ * 直接订阅 localStorage：写入方派发 progress-update 后自动重读，无需在 useEffect 中同步 setState
+ * （React Compiler 规则 react-hooks/set-state-in-effect 禁止该写法）。
+ */
+export function useLearningProgress() {
+  const progress = useSyncExternalStore(
+    subscribeProgress,
+    getProgressSnapshot,
+    getServerProgressSnapshot
+  );
+  // 兜底手动刷新：正常写入路径（saveLocal）都会派发 progress-update 自动刷新
+  const [, setVersion] = useState(0);
 
   const refresh = useCallback(() => {
-    setProgress(loadProgress());
+    setVersion((v) => v + 1);
   }, []);
 
   const completeLesson = useCallback(

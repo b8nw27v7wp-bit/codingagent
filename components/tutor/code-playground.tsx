@@ -2,11 +2,12 @@
 
 import { useState, useCallback, useRef, useEffect } from "react";
 import dynamic from "next/dynamic";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Play, Loader2, Terminal, RotateCcw } from "lucide-react";
 import { useToast } from "@/components/toast-provider";
+import { useMounted } from "@/lib/use-mounted";
 import type { OnMount } from "@monaco-editor/react";
 
 // Monaco Editor 动态导入（仅客户端），避免 SSR 报错
@@ -77,14 +78,10 @@ export function CodePlayground() {
   const [running, setRunning] = useState(false);
   const [editorMounted, setEditorMounted] = useState(false);
   // hydration 保护：SSR 与首次客户端渲染输出一致，挂载后再渲染 Monaco
-  const [mounted, setMounted] = useState(false);
+  const mounted = useMounted();
   const [editorKey, setEditorKey] = useState(0); // 切换语言时重新挂载编辑器
   const editorRef = useRef<Parameters<OnMount>[0] | null>(null);
   const { success: toastSuccess, error: toastError } = useToast();
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   // 代码变更时防抖保存到 localStorage（300ms）
   useEffect(() => {
@@ -117,7 +114,7 @@ export function CodePlayground() {
     } finally {
       setRunning(false);
     }
-  }, [code, language]);
+  }, [code, language, toastSuccess, toastError]);
 
   function switchLanguage(next: Language) {
     if (next === language) return;

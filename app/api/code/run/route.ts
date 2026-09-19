@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { runCode } from "@/lib/code-runner";
-import { isCodeSafe, getBlockedPattern, type CodeLanguage } from "@/lib/sandbox-safety";
+import { getBlockedPattern, type CodeLanguage } from "@/lib/sandbox-safety";
 
 const VALID_LANGUAGES: CodeLanguage[] = ["python", "javascript"];
 

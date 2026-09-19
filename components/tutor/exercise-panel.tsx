@@ -1,11 +1,10 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback } from "react";
 import dynamic from "next/dynamic";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Play,
   Loader2,
@@ -15,9 +14,9 @@ import {
   ChevronRight,
   ChevronLeft,
 } from "lucide-react";
-import type { OnMount } from "@monaco-editor/react";
 import { markExerciseComplete } from "@/lib/progress";
 import { useToast } from "@/components/toast-provider";
+import { useMounted } from "@/lib/use-mounted";
 
 const Editor = dynamic(() => import("@monaco-editor/react"), { ssr: false });
 
@@ -52,19 +51,15 @@ interface Props {
   language?: string;
 }
 
-export function ExercisePanel({ exercises, courseId, lessonId, language = "python" }: Props) {
+export function ExercisePanel({ exercises, courseId, language = "python" }: Props) {
   const [currentIdx, setCurrentIdx] = useState(0);
   const [code, setCode] = useState("");
   const [evaluating, setEvaluating] = useState(false);
   const [result, setResult] = useState<EvaluationResult | null>(null);
   const [showHints, setShowHints] = useState<number>(0);
   // hydration 保护：SSR 与首次客户端渲染输出一致，挂载后再渲染 Monaco
-  const [mounted, setMounted] = useState(false);
+  const mounted = useMounted();
   const { success: toastSuccess } = useToast();
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   const exercise = exercises[currentIdx];
 
@@ -96,7 +91,7 @@ export function ExercisePanel({ exercises, courseId, lessonId, language = "pytho
     } finally {
       setEvaluating(false);
     }
-  }, [code, exercise]);
+  }, [code, exercise, courseId, toastSuccess]);
 
   const prevExercise = () => {
     if (currentIdx > 0) {

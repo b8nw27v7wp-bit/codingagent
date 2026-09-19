@@ -57,7 +57,6 @@ export function getExercise(exerciseId: string): Exercise | null {
 
   // 重建 courseId: "python-basics"
   const courseId = parts.slice(0, -2).join("-");
-  const lessonId = parts[parts.length - 2];
   const filePath = path.join(
     CONTENT_DIR,
     courseId,

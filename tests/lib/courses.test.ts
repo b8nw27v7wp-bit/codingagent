@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { markdownToHtml, parseLesson } from "@/lib/courses";
+import { markdownToHtml } from "@/lib/courses";
 
 describe("markdownToHtml", () => {
   it("converts headers", () => {

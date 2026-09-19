@@ -50,7 +50,7 @@ export async function runOpenCode(
   ].join(" ");
 
   return new Promise((resolve) => {
-    const child = exec(command, {
+    exec(command, {
       cwd: workdir,
       env: { ...process.env },
       timeout,
