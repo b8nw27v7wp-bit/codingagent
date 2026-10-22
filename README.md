@@ -17,7 +17,7 @@
 ### 🎯 核心特色
 
 - 🤖 **AI 对话辅导** — 苏格拉底式提问，5 级渐进提示策略
-- 📚 **结构化课程** — Python + JavaScript 双语言课程，各 10 课时
+- 📚 **结构化课程** — Python 基础 / JavaScript 基础 / 算法入门 三门课程，各 10 课时
 - 💻 **在线练习环境** — Monaco Editor (VS Code 内核) + 多语言沙箱
 - 🧪 **代码自动评测** — 测试用例验证 + AI Review 反馈
 - 📊 **学习数据看板** — 进度可视化，实时统计追踪
@@ -151,7 +151,7 @@ ai-coding-tutor/
 │       ├── manifest.json         # 课程元信息
 │       ├── 01-*.mdx ~ 10-*.mdx   # 10 节 MDX 课时
 │       └── exercises/            # 20 道练习题 (JSON)
-├── tests/                        # 单元测试 (64 项)
+├── tests/                        # 单元测试 (77 项)
 ├── PROGRESS.md                   # 开发进度记录
 ├── ROADMAP.md                    # 后续路线图
 └── README.md                     # 项目说明
@@ -229,7 +229,22 @@ curl -X POST http://localhost:3000/api/code/evaluate \
 | 09 | 对象 | 25min | 2 题 |
 | 10 | 综合项目 | 45min | 2 题 |
 
-**总计：2 门课程，20 课时，40 道编程练习题**
+### 算法入门（Python）
+
+| # | 课时 | 时长 | 练习题 |
+|---|---|---|---|
+| 01 | 什么是算法 | 20min | 2 题 |
+| 02 | 时间复杂度入门 | 25min | 2 题 |
+| 03 | 枚举与暴力搜索 | 25min | 2 题 |
+| 04 | 双指针技巧 | 30min | 2 题 |
+| 05 | 贪心算法 | 30min | 2 题 |
+| 06 | 递归思想 | 30min | 2 题 |
+| 07 | 排序算法：冒泡与选择 | 35min | 2 题 |
+| 08 | 二分查找 | 30min | 2 题 |
+| 09 | 栈与队列 | 30min | 2 题 |
+| 10 | 综合项目：查找与排序工具箱 | 45min | 2 题 |
+
+**总计：3 门课程，30 课时，60 道编程练习题**
 
 ---
 
@@ -245,7 +260,7 @@ curl -X POST http://localhost:3000/api/code/evaluate \
 | 主题 | next-themes (暗色模式) |
 | 沙箱 | Python / Node.js 子进程 (cross-spawn) |
 | 图标 | Lucide React |
-| 测试 | Vitest (64 项) |
+| 测试 | Vitest (77 项) |
 | 包管理 | npm |
 
 ---
@@ -254,10 +269,15 @@ curl -X POST http://localhost:3000/api/code/evaluate \
 
 | 模块 | 测试数 | 覆盖范围 |
 |---|---|---|
-| `lib/courses.ts` | 21 | Markdown 渲染、HTML 转义、课程加载 |
+| `lib/courses.ts` | 14 | Markdown 渲染、HTML 转义、课程加载 |
+| `lib/courses-db.ts` | 7 | 课程入库与数据库读取 |
+| `lib/db-health.ts` | 4 | 数据库连通性探活与超时兜底 |
 | `lib/exercises.ts` | 10 | 题库加载、字段完整性 |
 | `lib/sandbox-safety.ts` | 25 | Python/JS 安全过滤白名单/黑名单 |
 | `lib/prompts/tutor.ts` | 8 | Prompt 结构、教学策略 |
+| `app/api/health` | 2 | 健康检查路由 |
+
+> 合计 77 项（上表为 `it()` 用例数，`it.each` 展开后总数为 77）。
 
 ```bash
 npm test        # 运行全部测试
