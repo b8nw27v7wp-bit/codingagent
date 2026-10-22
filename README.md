@@ -275,6 +275,7 @@ curl -X POST http://localhost:3000/api/code/evaluate \
 | `lib/exercises.ts` | 10 | 题库加载、字段完整性 |
 | `lib/sandbox-safety.ts` | 25 | Python/JS 安全过滤白名单/黑名单 |
 | `lib/prompts/tutor.ts` | 8 | Prompt 结构、教学策略 |
+| `lib/progress-hook.test.tsx` | 7 | 进度 useSyncExternalStore 订阅/刷新/storage 事件 |
 | `app/api/health` | 2 | 健康检查路由 |
 
 > 合计 77 项（上表为 `it()` 用例数，`it.each` 展开后总数为 77）。
