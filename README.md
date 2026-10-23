@@ -1,33 +1,68 @@
-# AI 编程教学助手
+# AI 编程教学助手（codingagent）
 
-> 基于大语言模型的编程初学者智能辅导系统
-
-[![Next.js](https://img.shields.io/badge/Next.js-16.2-black?logo=next.js)](https://nextjs.org/)
+[![Next.js](https://img.shields.io/badge/Next.js-16-black?logo=next.js)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?logo=typescript)](https://www.typescriptlang.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-4-38bdf8?logo=tailwindcss)](https://tailwindcss.com/)
-[![DeepSeek](https://img.shields.io/badge/LLM-DeepSeek--Chat-purple)](https://deepseek.com/)
-[![Build](https://img.shields.io/badge/build-passing-brightgreen)]()
 
----
+> 面向编程零基础初学者的智能辅导系统：课程 + 在线练习 + 代码评测 + 苏格拉底式 AI 辅导，让学习者**自己写出答案**而不是抄答案。
 
-## 📖 项目简介
+集成了大语言模型，但刻意不用「直接给代码」的问答方式——AI 的角色是提问、给提示、指出错误，把学生推回编辑器。3 门课程、30 课时、60 道练习题，练习在浏览器里用 VS Code 同款编辑器写，提交后跑测试用例并附 AI 评审。
 
-**AI 编程教学助手**是一个面向编程零基础初学者的智能辅导 Web 应用。系统基于 Next.js 构建，集成 DeepSeek 大语言模型，通过苏格拉底式引导教学法，帮助学生**自己学会编程**，而非直接获取答案。
+## 它能做什么
 
-### 🎯 核心特色
+### 按课程学
 
-- 🤖 **AI 对话辅导** — 苏格拉底式提问，5 级渐进提示策略
-- 📚 **结构化课程** — Python 基础 / JavaScript 基础 / 算法入门 三门课程，各 10 课时
-- 💻 **在线练习环境** — Monaco Editor (VS Code 内核) + 多语言沙箱
-- 🧪 **代码自动评测** — 测试用例验证 + AI Review 反馈
-- 📊 **学习数据看板** — 进度可视化，实时统计追踪
-- 🌓 **暗色模式** — 跟随系统 / 手动切换
-- ⚡ **流式输出** — AI 回答打字机效果，1.3s 首字响应
-- 🔒 **BYOK 安全模式** — 客户自带 API Key，费用自担
+- **3 门交互式课程**，各 10 课时，共 30 课时：
+  - Python 基础：认识 Python → 变量 / 数据类型 / 输入输出 / 条件 / 循环 / 列表 / 函数 / 字典 → 综合项目
+  - JavaScript 基础：同样的零基础路径，落到数组 / 函数 / 对象 → 综合项目
+  - 算法入门（Python）：时间复杂度、枚举、双指针、贪心、递归、排序、二分查找、栈与队列 → 查找与排序工具箱
+- 课时正文用 MDX 写（`content/<course>/NN-*.mdx`），带目录、进度与上一课/下一课跳转
+- 每课时配 2 道练习，共 **60 道**
 
----
+### 在浏览器里写代码
 
-## 🏗 系统架构
+- **Monaco Editor**（VS Code 内核）：语法高亮、自动补全、快捷键一致
+- **多语言沙箱**：Python 与 JavaScript 子进程执行（`cross-spawn`，Windows 兼容），返回 stdout/stderr/耗时
+- **安全过滤**：拦截 `import os` / `subprocess` / `eval` / `exec` / `require` / `process` 等危险调用，10 秒超时防死循环，输入上限 50KB
+
+### 被评测，也被追问
+
+- **代码自动评测**：跑该题的测试用例给出通过/失败明细，再叠加一次 AI Review 指出可改进处（`/api/code/evaluate`）
+- **苏格拉底式辅导**：教学 Prompt 内置 5 级渐进提示策略——从「再读一遍题目」到「给你关键一行」，逐级放开，不直接贴完整答案
+- **流式对话**：SSE 打字机效果，可中断；对话历史持久化，多轮上下文延续；支持语音输入与 Ctrl+Enter 发送
+
+### 看得到进度
+
+- 学习看板：课程完成度、练习通过率、学习时长与连续天数
+- 进度存 MySQL（`mysql2`）并按账号同步；未登录时退回本地存储
+- 账号体系：NextAuth 登录 + 注册接口（`bcryptjs` 哈希密码）
+
+### 自带 Key（BYOK）
+
+两种 Key 来源，**优先客户端自带的**：
+
+1. 客户端填写（推荐）：问答面板右上角填自己的 DeepSeek Key，仅存浏览器 localStorage，随请求头 `x-api-key` 发送，费用走自己的账户，不写服务器
+2. 服务端兜底：`.env.local` 配 `DEEPSEEK_API_KEY`，仅当客户端没给 Key 时使用，适合本地调试或自托管演示
+
+部署给他人使用时建议**不要**配服务端 Key。
+
+## 技术栈
+
+| 层 | 选型 | 说明 |
+| --- | --- | --- |
+| 框架 | Next.js 16（App Router） | Server Component + Route Handler，`next build` 自带类型检查 |
+| 语言 | TypeScript 5 | 全仓 strict |
+| 样式 | Tailwind CSS 4 + shadcn/ui（@base-ui） | 浅色极简，暗色模式由 `next-themes` 跟随系统 |
+| 编辑器 | @monaco-editor/react | VS Code 同款编辑体验 |
+| 沙箱 | Python / Node.js 子进程（cross-spawn） | 跨平台执行 + 白名单/黑名单过滤 + 超时 |
+| 数据库 | MySQL（mysql2） | 课程入库、学习进度、账号 |
+| 认证 | NextAuth + bcryptjs | 登录会话 + 注册密码哈希 |
+| LLM | DeepSeek Chat（OpenAI 兼容） | Provider 抽象层，可换实现；流式与非流式两条链路 |
+| 内容 | MDX + JSON 题库 | 课程与题目是文件，不进数据库也能跑 |
+| 测试 | Vitest | 77 项，覆盖渲染/题库/沙箱安全/进度订阅/健康检查 |
+| 部署 | Vercel / Docker | `Dockerfile` + `docker-compose.yml` 已备 |
+
+## 架构
 
 ```
 ┌────────────────────────────────────────────────────────┐
@@ -40,143 +75,51 @@
 │                  API 层 (Route Handlers)                │
 │  /api/ai/chat  /api/ai/chat/stream                     │
 │  /api/code/run  /api/code/evaluate                     │
+│  /api/courses  /api/progress  /api/auth/*  /api/health │
 ├────────────────────────────────────────────────────────┤
 │                   核心逻辑层                              │
 │  LLM Provider (DeepSeek)  │  课程引擎  │  评测引擎      │
 │  教学 Prompt 模板          │  MDX 解析  │  沙箱执行      │
 ├────────────────────────────────────────────────────────┤
 │                  数据 / 存储层                            │
-│  localStorage (进度/对话)  │  MDX 文件系统  │  JSON 题库 │
+│  MySQL (课程/进度/账号)  │  MDX 文件系统  │  JSON 题库  │
 └────────────────────────────────────────────────────────┘
 ```
 
----
+## 快速开始
 
-## 🚀 快速开始
-
-### 环境要求
-
-- Node.js ≥ 18
-- Python ≥ 3.8（代码沙箱执行）
-- Node.js（JavaScript 代码沙箱执行）
-- DeepSeek API Key（可选，[获取地址](https://platform.deepseek.com/)）
-
-### 安装运行
+环境要求：Node.js ≥ 18、Python ≥ 3.8（Python 沙箱）、MySQL（可选，不配则进度存本地）
 
 ```bash
-# 1. 克隆项目
-git clone <repo-url>
-cd ai-coding-tutor
-
-# 2. 安装依赖
 npm install
-
-# 3.（可选）配置服务端兜底 API Key
-echo "DEEPSEEK_API_KEY=sk-xxx" > .env.local
-
-# 4. 启动开发服务器
-npm run dev
-
-# 5. 打开浏览器访问
-# http://localhost:3000
+echo "DEEPSEEK_API_KEY=sk-xxx" > .env.local   # 可选：服务端兜底 Key
+npm run dev                                    # http://localhost:3000
 ```
 
-### API Key 模式（BYOK）
-
-项目支持两种 API Key 来源，**优先使用客户自带的 Key**：
-
-1. **客户端填写（推荐）**：打开智能问答面板，点击右上角 🔑 按钮，填入你自己的 DeepSeek API Key。Key 仅保存在浏览器 localStorage，请求时通过 `x-api-key` 请求头发送，费用由你的账户承担，不会写入服务器。
-2. **服务端配置（兜底）**：`.env.local` 中配置 `DEEPSEEK_API_KEY`。仅当客户端未提供 Key 时使用，适合开发调试或自托管演示。
-
-> 部署给客户使用时，建议**不要**配置服务端 Key，让每个客户使用自己的 Key。
-
-### 生产构建
+生产构建：
 
 ```bash
-npm run build
-npm start
+npm run build && npm start
 ```
 
----
+## API 端点
 
-## 📁 项目结构
-
-```
-ai-coding-tutor/
-├── app/                          # Next.js App Router
-│   ├── layout.tsx                # 根布局（Theme + Toast + Tooltip）
-│   ├── page.tsx                  # 首页（4 标签页）
-│   ├── api/
-│   │   ├── ai/
-│   │   │   ├── chat/route.ts     # 非流式 AI 对话
-│   │   │   └── chat/stream/route.ts  # 流式 AI (SSE)
-│   │   └── code/
-│   │       ├── run/route.ts      # 多语言代码沙箱执行
-│   │       └── evaluate/route.ts # 代码评测 + AI Review
-│   └── courses/
-│       ├── page.tsx              # 课程列表页
-│       └── [courseId]/
-│           ├── page.tsx          # 课程目录（含进度）
-│           └── [lessonId]/page.tsx  # 课时内容 + 练习
-├── components/
-│   ├── ui/                       # shadcn/ui 组件库 (11 个)
-│   ├── theme-provider.tsx        # 暗色模式 Provider
-│   ├── theme-toggle.tsx          # 主题切换按钮
-│   ├── toast-provider.tsx        # Toast 通知系统
-│   └── tutor/
-│       ├── chat-panel.tsx        # AI 对话面板（流式+持久化）
-│       ├── code-playground.tsx   # Monaco Editor 练习环境
-│       ├── exercise-panel.tsx    # 练习评测面板
-│       ├── learning-dashboard.tsx # 学习数据看板
-│       └── lesson-*.tsx          # 进度追踪组件
-├── lib/
-│   ├── api-key.ts                # BYOK Key 管理
-│   ├── code-runner.ts            # 多语言代码执行器
-│   ├── courses.ts                # 课程加载 + MDX→HTML
-│   ├── exercises.ts              # 练习题加载器
-│   ├── progress.ts               # 学习进度管理
-│   ├── sandbox-safety.ts         # 多语言安全过滤
-│   ├── llm/                      # LLM Provider 抽象层
-│   │   ├── provider.ts           # 接口定义
-│   │   ├── deepseek.ts           # DeepSeek 直连
-│   │   └── opencode.ts           # OpenCode CLI 兜底
-│   └── prompts/
-│       └── tutor.ts              # 教学 Prompt 模板
-├── content/
-│   ├── python-basics/            # Python 基础课程
-│   │   ├── manifest.json         # 课程元信息
-│   │   ├── 01-*.mdx ~ 10-*.mdx   # 10 节 MDX 课时
-│   │   └── exercises/            # 20 道练习题 (JSON)
-│   └── javascript-basics/        # JavaScript 基础课程
-│       ├── manifest.json         # 课程元信息
-│       ├── 01-*.mdx ~ 10-*.mdx   # 10 节 MDX 课时
-│       └── exercises/            # 20 道练习题 (JSON)
-├── tests/                        # 单元测试 (77 项)
-├── PROGRESS.md                   # 开发进度记录
-├── ROADMAP.md                    # 后续路线图
-└── README.md                     # 项目说明
-```
-
----
-
-## 🔌 API 端点
-
-| 端点 | 方法 | 说明 | 响应时间 |
-|---|---|---|---|
-| `/api/ai/chat` | POST | 非流式 AI 对话 | ~1.3s |
-| `/api/ai/chat/stream` | POST | 流式 AI 对话 (SSE) | ~1.3s 首字 |
-| `/api/code/run` | POST | 多语言代码执行 | ~0.5s |
-| `/api/code/evaluate` | POST | 代码评测 + AI Review | ~1.5s |
-| `/api/courses` | GET | 课程列表 | ~50ms |
-| `/api/health` | GET | 健康检查（状态/数据库连通性/运行时长） | ~5ms |
-
-### 请求示例
+| 端点 | 方法 | 说明 |
+| --- | --- | --- |
+| `/api/ai/chat` | POST | 非流式 AI 对话 |
+| `/api/ai/chat/stream` | POST | 流式 AI 对话（SSE） |
+| `/api/code/run` | POST | 多语言代码沙箱执行 |
+| `/api/code/evaluate` | POST | 代码评测 + AI Review |
+| `/api/courses` | GET | 课程列表 |
+| `/api/progress` | GET / POST | 学习进度读取与保存 |
+| `/api/auth/register` | POST | 注册 |
+| `/api/auth/[...nextauth]` | GET / POST | NextAuth 登录会话 |
+| `/api/health` | GET | 健康检查（`{status, db, uptime}`，数据库 SELECT 1 超时兜底） |
 
 ```bash
-# AI 对话（客户端自带 Key）
+# 流式对话（客户端自带 Key）
 curl -X POST http://localhost:3000/api/ai/chat/stream \
-  -H "Content-Type: application/json" \
-  -H "x-api-key: sk-xxx" \
+  -H "Content-Type: application/json" -H "x-api-key: sk-xxx" \
   -d '{"message": "什么是变量？"}'
 
 # 代码执行（Python）
@@ -184,149 +127,94 @@ curl -X POST http://localhost:3000/api/code/run \
   -H "Content-Type: application/json" \
   -d '{"code": "print(\"Hello!\")", "language": "python"}'
 
-# 代码执行（JavaScript）
-curl -X POST http://localhost:3000/api/code/run \
-  -H "Content-Type: application/json" \
-  -d '{"code": "console.log(\"Hello!\")", "language": "javascript"}'
-
 # 代码评测
 curl -X POST http://localhost:3000/api/code/evaluate \
   -H "Content-Type: application/json" \
   -d '{"code": "print(\"Hello, World!\")", "exerciseId": "python-basics-01-01"}'
 ```
 
----
+## 课程内容
 
-## 📊 课程内容
+| 课程 | 课时 | 练习题 | 覆盖 |
+| --- | --- | --- | --- |
+| Python 基础 | 10 | 20 | 变量、数据类型、输入输出、条件、循环、列表、函数、字典、综合项目 |
+| JavaScript 基础 | 10 | 20 | 变量与常量、数据类型、输入输出、条件、循环、数组、函数、对象、综合项目 |
+| 算法入门（Python） | 10 | 20 | 复杂度、枚举、双指针、贪心、递归、排序、二分查找、栈与队列、综合项目 |
 
-### Python 基础语法
+合计 **3 门课程 / 30 课时 / 60 道编程练习题**。课时与题目都是仓库里的文件（`content/<course>/NN-*.mdx` 与 `content/<course>/exercises/`），加课不用改代码。
 
-| # | 课时 | 时长 | 练习题 |
-|---|---|---|---|
-| 01 | 认识 Python | 15min | 2 题 |
-| 02 | 变量与赋值 | 20min | 2 题 |
-| 03 | 数据类型 | 25min | 2 题 |
-| 04 | 输入与输出 | 20min | 2 题 |
-| 05 | 条件判断 | 25min | 2 题 |
-| 06 | 循环结构 | 30min | 2 题 |
-| 07 | 列表 | 25min | 2 题 |
-| 08 | 函数 | 30min | 2 题 |
-| 09 | 字典 | 25min | 2 题 |
-| 10 | 综合项目 | 45min | 2 题 |
+## 目录结构
 
-### JavaScript 基础语法
+```
+app/
+  page.tsx                    # 首页（4 标签页）
+  courses/                    # 课程列表 → 目录 → 课时（MDX 渲染 + 练习）
+  api/ai/chat{,/stream}/      # AI 对话（非流式 / SSE 流式）
+  api/code/run|evaluate/      # 沙箱执行 / 评测 + AI Review
+  api/courses|progress|health/ # 课程列表 / 进度读写 / 健康检查
+  api/auth/{register,[...nextauth]}/  # 注册 / 登录会话
+components/
+  tutor/chat-panel.tsx        # 对话面板（流式 + 持久化 + BYOK）
+  tutor/code-playground.tsx   # Monaco 练习环境
+  tutor/exercise-panel.tsx    # 练习评测面板
+  tutor/learning-dashboard.tsx # 学习看板
+  ui/                         # shadcn/ui 组件
+lib/
+  courses.ts  exercises.ts  progress.ts   # 课程加载（MDX→HTML）/ 题库 / 进度
+  code-runner.ts  sandbox-safety.ts       # 多语言执行 / 安全过滤
+  api-key.ts                              # BYOK Key 管理
+  llm/{provider,deepseek,opencode}.ts     # Provider 抽象与实现
+  prompts/tutor.ts                        # 教学 Prompt（5 级渐进提示）
+content/{python-basics,javascript-basics,algorithms-python}/  # 课时 MDX + 题目 JSON
+tests/                        # Vitest（77 项）
+```
 
-| # | 课时 | 时长 | 练习题 |
-|---|---|---|---|
-| 01 | 认识 JavaScript | 15min | 2 题 |
-| 02 | 变量与常量 | 20min | 2 题 |
-| 03 | 数据类型 | 25min | 2 题 |
-| 04 | 输入与输出 | 20min | 2 题 |
-| 05 | 条件判断 | 25min | 2 题 |
-| 06 | 循环结构 | 30min | 2 题 |
-| 07 | 数组 | 25min | 2 题 |
-| 08 | 函数 | 30min | 2 题 |
-| 09 | 对象 | 25min | 2 题 |
-| 10 | 综合项目 | 45min | 2 题 |
+## 测试
 
-### 算法入门（Python）
+```bash
+npm test        # 77 项
+npm run build   # 生产构建（含类型检查）
+```
 
-| # | 课时 | 时长 | 练习题 |
-|---|---|---|---|
-| 01 | 什么是算法 | 20min | 2 题 |
-| 02 | 时间复杂度入门 | 25min | 2 题 |
-| 03 | 枚举与暴力搜索 | 25min | 2 题 |
-| 04 | 双指针技巧 | 30min | 2 题 |
-| 05 | 贪心算法 | 30min | 2 题 |
-| 06 | 递归思想 | 30min | 2 题 |
-| 07 | 排序算法：冒泡与选择 | 35min | 2 题 |
-| 08 | 二分查找 | 30min | 2 题 |
-| 09 | 栈与队列 | 30min | 2 题 |
-| 10 | 综合项目：查找与排序工具箱 | 45min | 2 题 |
-
-**总计：3 门课程，30 课时，60 道编程练习题**
-
----
-
-## 🛠 技术栈
-
-| 类别 | 技术 |
-|---|---|
-| 框架 | Next.js 16 (App Router) |
-| 语言 | TypeScript 5 |
-| 样式 | Tailwind CSS 4 + shadcn/ui |
-| 编辑器 | Monaco Editor (@monaco-editor/react) |
-| AI | DeepSeek Chat API (OpenAI 兼容) |
-| 主题 | next-themes (暗色模式) |
-| 沙箱 | Python / Node.js 子进程 (cross-spawn) |
-| 图标 | Lucide React |
-| 测试 | Vitest (77 项) |
-| 包管理 | npm |
-
----
-
-## 🧪 测试覆盖
-
-| 模块 | 测试数 | 覆盖范围 |
-|---|---|---|
+| 模块 | 用例 | 覆盖范围 |
+| --- | --- | --- |
 | `lib/courses.ts` | 14 | Markdown 渲染、HTML 转义、课程加载 |
 | `lib/courses-db.ts` | 7 | 课程入库与数据库读取 |
 | `lib/db-health.ts` | 4 | 数据库连通性探活与超时兜底 |
 | `lib/exercises.ts` | 10 | 题库加载、字段完整性 |
 | `lib/sandbox-safety.ts` | 25 | Python/JS 安全过滤白名单/黑名单 |
-| `lib/prompts/tutor.ts` | 8 | Prompt 结构、教学策略 |
-| `lib/progress-hook.test.tsx` | 7 | 进度 useSyncExternalStore 订阅/刷新/storage 事件 |
+| `lib/prompts/tutor.ts` | 8 | Prompt 结构与教学策略 |
+| `lib/progress-hook.test.tsx` | 7 | 进度订阅 / 刷新 / storage 事件 |
 | `app/api/health` | 2 | 健康检查路由 |
 
-> 合计 77 项（上表为 `it()` 用例数，`it.each` 展开后总数为 77）。
+合计 77 项（上表为 `it()` 用例数，`it.each` 展开后总数为 77）。
 
-```bash
-npm test        # 运行全部测试
-npm run build   # 生产构建验证
-```
+## 部署
 
----
+**Vercel**：导入仓库即可部署（客户端自带 Key 时无需配置服务端 `DEEPSEEK_API_KEY`）。注意 Vercel 无 Python/Node 子进程运行时，**代码执行功能需自备环境**。
 
-## 🌍 部署
-
-### Vercel（推荐）
-
-1. 推送项目到 GitHub
-2. 在 [Vercel](https://vercel.com) 导入仓库
-3. 部署即可（客户端自带 Key，**无需**配置服务端 `DEEPSEEK_API_KEY`）
-4. 如需服务端兜底，配置环境变量 `DEEPSEEK_API_KEY`
-
-> ⚠️ 注意：Vercel 环境可能没有 Python/Node.js 运行时，代码执行功能需额外环境支持。
-
-### Docker
+**Docker**：
 
 ```bash
 docker build -t ai-coding-tutor .
 docker run -p 3000:3000 ai-coding-tutor
 ```
 
----
+## 安全措施
 
-## 🔒 安全措施
+- API Key 不进仓库（`.env.local` 已 gitignore）；BYOK 的 Key 只存浏览器 localStorage，经 `x-api-key` 请求头传输
+- 代码沙箱拦截 `import os` / `subprocess` / `eval` / `exec` / `require` / `process`
+- 10 秒执行超时、50KB 输入上限
+- 安全响应头（X-Frame-Options / nosniff / Referrer-Policy / XSS Protection）
+- `cross-spawn` 替代 `child_process.exec`（Windows 兼容，避免命令拼接注入）
 
-- ✅ API Key 不提交到仓库（`.env.local` 已被 gitignore）
-- ✅ BYOK 模式：客户 Key 仅存浏览器 localStorage，经 `x-api-key` 请求头传输
-- ✅ 代码沙箱拦截 `import os`/`subprocess`/`eval`/`exec`/`require`/`process`
-- ✅ 10 秒超时防止死循环
-- ✅ 输入长度限制（50KB）
-- ✅ 安全响应头（X-Frame-Options / nosniff / Referrer / XSS Protection）
-- ✅ `cross-spawn` 替代 `child_process.exec`（Windows 兼容）
+## 已知限制
 
----
+- 沙箱是**子进程 + 关键词过滤**，不是容器级隔离；面向教学场景，不要拿去跑不可信代码。
+- 评测依赖每题预置的测试用例，题目质量决定评测质量；自由发挥的写法可能被判错。
+- 课程与题库是静态文件，改内容要发版，没有教师后台。
+- Vercel 等无状态平台跑不了代码执行，部署到这类平台时「练」的环节会失效。
 
-## 📝 开发日志
-
-- **v0.3** — 核心功能完整交付（AI 对话、课程、练习、评测、看板）
-- **v0.4** — 新增 JavaScript 课程，多语言运行与评测
-- **v0.5** — Bug 修复与代码质量提升（8 项修复，64 测试全通过）
-
----
-
-## 📄 License
+## License
 
 MIT
